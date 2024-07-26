@@ -9,5 +9,6 @@ sidebar-category:
         url: "/cs"
       - title: "FE"
         url: "/front-end"
+        category: "front-end"
       
     
