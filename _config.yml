@@ -323,3 +323,5 @@ defaults:
       comments: # true
       share: true
       related: true
+      sidebar:                   # 카테고리 사이드바쪽으로 이동
+        nav: "sidebar-category" 
