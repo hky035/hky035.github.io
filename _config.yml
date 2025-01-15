@@ -20,7 +20,7 @@ rtl                      : # true, false (default) # turns direction of the page
 title                    : "I am hky035"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
-name                     : "kiyoung heo"
+name                     : "hky035"
 description              : "heos devlog"
 url                      : "https://hky035.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
@@ -113,13 +113,13 @@ analytics:
 
 # Site Author
 author:
-  name             : "Kiyoung Heo"
+  name             : "hky035"
   avatar           : assets/moon.jpg # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "Welcome to HeoLog"
   location         : "Daegu, Korea"
-  email            : "hky035@gmail.com"
+  # email            : "hky035@gmail.com"
   links:
-    - label: "Email"
+    - label: "hky035@gmail.com"
       icon: "fas fa-fw fa-envelope-square"
       url: "hky035@gmail.com"
     - label: "Website"
@@ -133,10 +133,13 @@ author:
       # url: "https://facebook.com/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      # url: "https://github.com/"
+      url: "https://github.com/hky035"
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
       # url: "https://instagram.com/"
+    # - label: "Linked In"
+    #   icon: "fa-brands fa-linkedin"
+    #   url: "https://kr.linkedin.com/"
 
 # Site Footer
 footer:
