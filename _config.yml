@@ -328,4 +328,4 @@ defaults:
       related: true
       sidebar:
         nav:
-          - categories
+          - "categories"
