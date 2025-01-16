@@ -28,6 +28,7 @@ repository               : "hky035/hky035.github.io"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 logo                     : # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
+future                   : true # 포스팅 에러 해결을 위한 수정
 breadcrumbs              : # true, false (default)
 words_per_minute         : 200
 enable_copy_code_button  : # true, false (default)
@@ -326,7 +327,6 @@ defaults:
       comments: # true
       share: true
       related: true
-      future: true
       sidebar:
         nav:
           - "categories"
