@@ -3,6 +3,7 @@ title: ""
 permalink: /about
 layout: single
 comments: false
+classes: about
 ---
 
 <div style="width: 100%; height: 100%; box-sizing: none;">
