@@ -27,6 +27,17 @@ layout: default
     {% if page.date %}<meta itemprop="datePublished" content="{{ page.date | date_to_xmlschema }}">{% endif %}
     {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
 
+    <!-- 게시글 상단 category list 추가 -->
+    {% if page.categories and page.categories.size > 0 %}
+      <ul class="category-list">
+        <li><a href="/">Home</a></li>
+        >
+        <li><a href="/{{page.categories}}">{{page.categories}}</a></li>
+        >
+        <li>{{ page.title }}</li>
+      </ul>
+    {% endif %}
+
     <div class="page__inner-wrap">
       {% unless page.header.overlay_color or page.header.overlay_image %}
         <header>
