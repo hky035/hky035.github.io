@@ -35,9 +35,9 @@ body {
 
 .page {
   @include breakpoint($large) {
-    float: inline-end;
+    // float: inline-end;
     width: calc(100% - #{$right-sidebar-width-narrow});
-    padding-inline-end: $right-sidebar-width-narrow;
+    // padding-inline-end: $right-sidebar-width-narrow;
   }
 
   @include breakpoint($x-large) {
@@ -45,14 +45,25 @@ body {
     padding-inline-end: $right-sidebar-width;
   }
 
+  box-sizing: content-box;
+
   .page__inner-wrap {
-    float: inline-start;
+    // float: inline-start;
     margin-top: 1em;
     margin-inline: 0;
     width: 100%;
     clear: both;
 
-    .page__content,
+    .page_content {
+      position: relative;
+      float: inline-start;
+      margin-inline: 0;
+      width: 100%;
+      clear: both;
+      box-sizing: content-box;
+    }
+
+    // .page__content,
     .page__meta,
     .page__share {
       position: relative;
@@ -62,6 +73,10 @@ body {
       clear: both;
     }
   }
+}
+
+.page__content {
+  box-sizing: content-box;
 }
 
 .page__title {
@@ -559,3 +574,6 @@ body {
     }
   }
 }
+
+
+/* custome styles */
