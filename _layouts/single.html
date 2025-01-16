@@ -39,6 +39,15 @@ layout: default
         </header>
       {% endunless %}
 
+      {% if page.description -%}
+        <div style="margin: 40px 0 20px 0; border-left: 1px solid #ccc; padding-left: 15px; display: flex; flex-direction: column; width: 100%;">
+          <p style="font-weight: bold; font-size: 12px; color: #888; font-family: 'Noto Sans KR'; margin: 0; margin-left: 0; padding-top: 5px;">DESCRIPTION</p>
+          <p style="background: transparent; color: #333; font-size: 14px; margin: 3px 0">
+            {{page.description}}
+          </p>
+        </div>
+      {%- endif %}
+
       <section class="page__content" itemprop="text">
         {% if page.toc %}
           <aside class="sidebar__right {% if page.toc_sticky %}sticky{% endif %}">
