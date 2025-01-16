@@ -168,6 +168,7 @@
      ========================================================================== */
 
 .greedy-nav {
+  
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -176,7 +177,9 @@
   -ms-flex-align: center;
   align-items: center;
   min-height: $nav-height;
-  background: $background-color;
+  // masthead 상단 고정으로 인한 배경색 제거
+  // background: $background-color;
+  // background-color: rgba(255, 255, 255, 0.5);
 
   a {
     display: block;

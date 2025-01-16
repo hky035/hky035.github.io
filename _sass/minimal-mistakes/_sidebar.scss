@@ -23,6 +23,8 @@
     -webkit-transition: opacity 0.2s ease-in-out;
     transition: opacity 0.2s ease-in-out;
 
+
+    // 전체 hover 효과 삭제
     // &:hover {
     //   opacity: 1;
     // }
@@ -33,6 +35,8 @@
          viewport height - nav height - masthead x-padding
       */
       max-height: calc(100vh - #{$nav-height} - 2em);
+      top: 85.5px;
+      position: fixed;
     }
   }
 

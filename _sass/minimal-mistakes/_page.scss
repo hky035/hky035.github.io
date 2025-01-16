@@ -33,6 +33,12 @@ body {
   flex: 1 0 auto;
 }
 
+// masthead position:fixed 설정으로 인한 마진 설정
+.initial-content {
+  margin-top: 85.5px;
+  // overflow-y: auto;
+}
+
 .page {
   @include breakpoint($large) {
     float: inline-end;
@@ -44,6 +50,8 @@ body {
     width: calc(100% - #{$right-sidebar-width});
     padding-inline-end: $right-sidebar-width;
   }
+
+  overflow-y: auto;
 
   .page__inner-wrap {
     float: inline-start;
