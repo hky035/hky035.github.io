@@ -9,6 +9,7 @@ tag:
   - "essay"
   - "멋쟁이사자처럼"
 description: "현재 에세이 카테고리를 확인하기 위한 테스트 포스팅입니다. 유의하여 주시길 바라겠습니다."
+published: true
 date: 2025-01-17
 show_date: true
 ---
