@@ -126,10 +126,6 @@ blockquote {
 /* links */
 
 a {
-
-  /* a link - set default font weight */
-  font-weight: 600;
-
   &:focus {
     @extend %tab-focus;
   }
