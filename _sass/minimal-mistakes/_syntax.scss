@@ -6,7 +6,8 @@ div.highlighter-rouge,
 figure.highlight {
   position: relative;
   margin-bottom: 1em;
-  background: $base00;
+  // background: $base00;
+  background: #212121; /* change code block background color*/
   color: $base05;
   font-family: $monospace;
   font-size: $type-size-6;
@@ -325,5 +326,66 @@ figure.highlight {
 .gist {
   th, td {
     border-bottom: 0;
+  }
+}
+
+/* custom style - code copy button */
+
+// .copy-code-button {
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 0.5em;
+//   font-size: 1em; /* 아이콘 크기 조절 */
+//   transition: color 0.3s ease, transform 0.3s ease; /* 색상과 크기 변화에 대한 트랜지션 추가 */
+// }
+
+// .copy-code-button i {
+//   transition: transform 0.3s ease; /* 아이콘 크기 변화에 대한 트랜지션 추가 */
+// }
+
+// .copy-code-button:hover {
+//   background: rgba(255, 255, 255, 0.1); /* 마우스 호버 시 배경색 추가 */
+// }
+
+// .copy-code-button .fa-check {
+//   transform: scale(1.2); /* 체크 아이콘 크기 증가 */
+// }
+
+.copy-code-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  font-size: 1em; /* 아이콘 크기 조절 */
+  transition: color 0.3s ease; /* 색상 변화에 대한 트랜지션 추가 */
+  z-index: 1; /* 버튼이 다른 요소 위에 나타나도록 설정 */
+}
+
+.copy-code-button i {
+  transition: transform 0.3s ease; /* 아이콘 크기 변화에 대한 트랜지션 추가 */
+}
+
+.copy-code-button:hover {
+  background: rgba(255, 255, 255, 0.1); /* 마우스 호버 시 배경색 추가 */
+}
+
+.copy-code-button .fa-check {
+  transform: scale(1.2); /* 체크 아이콘 크기 증가 */
+}
+
+/* 애니메이션 클래스 */
+.animate {
+  animation: drop 0.3s forwards; /* 애니메이션 효과 적용 */
+}
+
+@keyframes drop {
+  0% {
+      transform: translateY(-10px); /* 위로 이동 */
+      opacity: 0; /* 투명도 0 */
+  }
+  100% {
+      transform: translateY(0); /* 원래 위치로 */
+      opacity: 1; /* 완전히 나타남 */
   }
 }

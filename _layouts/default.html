@@ -7,6 +7,62 @@
   <head>
     {% include head.html %}
     {% include head/custom.html %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+      const codeBlocks = document.querySelectorAll('pre');
+      codeBlocks.forEach(function (codeBlock) {
+        const button = document.createElement('button');
+        button.className = 'copy-code-button';
+        button.style.background = 'transparent'; 
+        button.style.border = 'none';
+        button.style.cursor = 'pointer';
+        button.style.color = 'white';
+        button.innerHTML = '<i class="fas fa-copy"></i>'; 
+
+        const code = codeBlock.querySelector('code');
+
+        button.addEventListener('click', function () { // click 시에 copy 및 아이콘 변경
+            const textArea = document.createElement('textarea');
+            textArea.value = code.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.querySelector('i').classList.add('animate');
+            
+            // 1초 후에 아이콘을 원래대로 되돌리기
+            setTimeout(function () {
+                button.innerHTML = '<i class="fas fa-copy"></i>';
+                button.querySelector('i').classList.remove('animate');
+            }, 1000);
+        });
+
+        // 코드 블록 위치 설정
+        codeBlock.style.position = 'relative'; // 부모 요소의 위치 realtive 설정
+        button.style.position = 'absolute';
+        button.style.top = '0'; 
+        button.style.right = '0'; 
+        button.style.opacity = '0'; 
+        button.style.transition = 'opacity 0.3s ease, transform 0.3s ease'; // 부드러운 전환 애니메이션 추가
+
+        // 코드 블록에 복사 버튼 추가
+        codeBlock.appendChild(button);
+
+        // 코드 블록에 hover 이벤트 추가
+        codeBlock.addEventListener('mouseenter', function () {
+            button.style.opacity = '1'; 
+            button.style.transform = 'translateY(0)';
+        });
+
+        codeBlock.addEventListener('mouseleave', function () {
+            button.style.opacity = '0';
+            button.style.transform = 'translateY(-10px)';
+        });
+    });
+});
+    </script>
   </head>
 
   <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}" dir="{% if site.rtl %}rtl{% else %}ltr{% endif %}">
