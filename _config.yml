@@ -114,15 +114,15 @@ analytics:
 
 # Site Author
 author:
-  name             : "hky035"
+  name             : "허기영"
   avatar           : assets/moon.jpg # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Welcome to HeoLog"
+  bio              : ""
   location         : "Daegu, Korea"
-  # email            : "hky035@gmail.com"
+  email            : "hky035@gmail.com"
   links:
-    - label: "hky035@gmail.com"
-      icon: "fas fa-fw fa-envelope-square"
-      url: "hky035@gmail.com"
+    # - label: "hky035@gmail.com"
+    #   icon: "fas fa-fw fa-envelope-square"
+    #   url: "hky035@gmail.com"
     - label: "Website"
       icon: "fas fa-fw fa-link"
       # url: "https://your-website.com"
