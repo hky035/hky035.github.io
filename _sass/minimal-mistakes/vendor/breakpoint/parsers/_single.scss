@@ -53,3 +53,30 @@
   font-weight: bold; /* 마지막 항목 강조 */
   color: #3d4144;
 }
+
+// ====== 
+
+.tip {
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  font-weight: 400;
+  font-size: 13px;
+  bottom: 100%;
+  left: 100%;
+  white-space: nowrap;
+  background-color: #666;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.7s;
+}
+
+.tip:hover .tooltip {
+  visibility: visible;
+  opacity: 1; /* 툴팁 표시 */
+}

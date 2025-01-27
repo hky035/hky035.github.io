@@ -1,22 +1,3 @@
-console.log('hello');
-
-// class TipElement extends HTMLElement {
-//     connectedCallback() {
-//         const content = this.getAttribute('content');
-//         this.innerHTML = `
-//             <span class="tip">
-//                 ${this.textContent}
-//                 <span class="tooltip">${content}</span>
-//             </span>
-//         `;
-
-//         this.style
-//     }
-// }
-
-// customElements.define('custom-tip', TipElement);
-
-
 class TipElement extends HTMLElement {
     constructor() {
         super();
