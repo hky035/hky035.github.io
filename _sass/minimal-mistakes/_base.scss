@@ -113,8 +113,21 @@ blockquote {
   margin: 0;
 
   padding-inline: 1em;
-  font-style: italic;
+  /* 인용문 italic 스타일 제거 */
+  // font-style: italic;
+  padding: 5px 1em;
   border-inline-start: 0.25em solid $primary-color;
+
+  /* font-size 변경 */
+  font-size: 15px;
+
+  p {
+    margin-bottom: 10px !important;
+  }
+
+  p:last-child {
+    margin-bottom: 0px !important;
+  }
 
   cite {
     font-style: italic;
