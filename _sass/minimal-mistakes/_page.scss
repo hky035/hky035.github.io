@@ -169,10 +169,14 @@ body {
   }
 
   :not(pre) > code {
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
+    /* inline code block padding change */
+    // padding-top: 0.1rem;
+    // padding-bottom: 0.1rem;
+    padding: 3px;
     font-size: 0.8em;
-    background: $code-background-color;
+    /* inline code block color change */
+    // background: $code-background-color;
+    background-color: #efefef;
     border-radius: $border-radius;
 
     &::before,
