@@ -357,3 +357,19 @@ input[type="submit"],
   -webkit-transition: $global-transition;
   transition: $global-transition;
 }
+
+
+/* custom */
+
+/* for reference */
+.page__content ul {
+  padding-inline-start: 15px;
+}
+
+/* for reference */
+a {
+  color: #3d4144 !important;
+  text-decoration-color: rgb(47.2,124.8,148.8);
+  text-underline-offset: 3px;
+  font-weight: normal;
+}
