@@ -277,8 +277,9 @@ public void configureMessageBroker(MessageBrokerRegistry registry) {
 따라서, `@MessageMapping`의 메시지 발행(pub) 경로에는 자동으로 /pub 접두사가 적용된다. 
 
 >
-□ `@DestinationVariable`
-: `@GetMapping`과 같은 일반 HTTP API 메서드에서는 Path Variable 값을 `@PathVariable` 어노테이션을 통하여 전달 받았지만, STOMP 통신에서는 `@DesitnationVariable` 어노테이션을 사용한다.
+**@DestinationVariable**   
+>
+`@GetMapping`과 같은 일반 HTTP API 메서드에서는 Path Variable 값을 `@PathVariable` 어노테이션을 통하여 전달 받았지만, STOMP 통신에서는 `@DesitnationVariable` 어노테이션을 사용한다.
 
 <br/>
 
