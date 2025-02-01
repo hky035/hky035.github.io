@@ -35,3 +35,17 @@ class TipElement extends HTMLElement {
 }
 
 customElements.define('custom-tip', TipElement);
+
+/* inline code block */
+class CustomCode extends HTMLElement {
+    connectedCallback() {
+        // const shadow = this.attachShadow({ mode: 'open' });
+        const span = document.createElement('span');
+        this.classList.add('inline-code');
+        span.innerHTML = this.innerHTML;
+        // shadow.appendChild(span);
+    }
+}
+
+// 커스텀 태그 정의
+customElements.define('inline-code', CustomCode);
