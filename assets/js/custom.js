@@ -19,7 +19,6 @@ class TipElement extends HTMLElement {
     }
 
     showTooltip() {
-        this.style.fontWeight = 'bold';
         this.style.cursor = 'pointer';
         const tooltip = this.querySelector('.tooltip');
         tooltip.style.visibility = 'visible';
@@ -34,4 +33,4 @@ class TipElement extends HTMLElement {
     }
 }
 
-customElements.define('custom-tip', TipElement);
+customElements.define('tip-tag', TipElement);
