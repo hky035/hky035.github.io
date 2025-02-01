@@ -34,7 +34,6 @@ h6 {
 }
 
 h1 {
-  margin-top: 0;
   font-size: $h-size-1;
 }
 
@@ -111,6 +110,7 @@ blockquote {
   // margin-block: 2em;
   // margin-inline-end: 1em;
   margin: 0;
+  margin-bottom: 10px;
 
   padding-inline: 1em;
   /* 인용문 italic 스타일 제거 */
