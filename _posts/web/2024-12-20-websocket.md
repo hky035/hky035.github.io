@@ -1,5 +1,5 @@
 ---
-layout: single
+layout: posts
 title:  "WebSocket, STOMP, Redis pub/sub"
 author_profile: true
 sidbar:
