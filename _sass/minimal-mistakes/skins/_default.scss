@@ -3,3 +3,22 @@
    ========================================================================== */
 
 // Intentionally left blank
+
+// posts.html -> arhive.html 내 h 태그 permalink 적용을 위한 css 도입
+h1, h2, h3, h4, h5, h6 {
+   .header-link {
+      color: #3D4144 !important;
+      position: relative;
+      inset-inline-start: 0.5em;
+      opacity: 0;
+      font-size: 0.8em;
+      -webkit-transition: opacity 0.2s ease-in-out 0.1s;
+      -moz-transition: opacity 0.2s ease-in-out 0.1s;
+      -o-transition: opacity 0.2s ease-in-out 0.1s;
+      transition: opacity 0.2s ease-in-out 0.1s;
+   }
+
+   &:hover .header-link {
+      opacity: 1;
+   }
+}

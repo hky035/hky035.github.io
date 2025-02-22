@@ -7,6 +7,32 @@
   <head>
     {% include head.html %}
     {% include head/custom.html %}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- h 태그 내 permalink 적용을 위한 jquery 도입 -->
+    <script> 
+    // .page__content_for_permalink 클래스(cf. archive.html) 내 h 태그에 permalink 적용
+      $(document).ready(function () {
+        (function () {
+          var pageContentElement = document.querySelector(".page__content_for_permalink");
+          if (!pageContentElement) return;
+
+          pageContentElement
+            .querySelectorAll("h1, h2, h3, h4, h5, h6")
+            .forEach(function (element) {
+                var id = element.getAttribute("id");
+                if (id) {
+                  var anchor = document.createElement("a");
+                  anchor.className = "header-link";
+                  anchor.href = "#" + id;
+                  anchor.innerHTML =
+                      '<span class="sr-only">Permalink</span><i class="fas fa-link"></i>';
+                  anchor.title = "Permalink";
+                  element.appendChild(anchor);
+                }
+            });
+    })();
+    })
+    </script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
       const codeBlocks = document.querySelectorAll('pre');
@@ -63,6 +89,8 @@
     });
 });
     </script>
+
+    
     
     <script src="/assets/js/custom.js"></script>
   </head>
