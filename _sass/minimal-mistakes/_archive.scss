@@ -433,4 +433,5 @@
 /* 글자 별 줄바꿈 */
 .page__content_for_permalink p{
   word-break: break-all;
+  font-family: $description;
 }
