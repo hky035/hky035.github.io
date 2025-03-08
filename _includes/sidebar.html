@@ -11,8 +11,10 @@
       {% if s.text %}{{ s.text | markdownify }}{% endif %}
       {% if s.nav %}{% include nav_list nav=s.nav %}{% endif %}
     {% endfor %}
-    {% if page.sidebar.nav and page.layout != 'posts'%} <!-- 모바일 화면 포스트 내에서 toggle mene 삭제 -->
-      {% include nav_list nav=page.sidebar.nav %}
+    {% if page.sidebar.nav'%} <!-- 모바일 화면 포스트 내에서 toggle menu 버튼 삭제 -->
+      <div class="{%if page.layout == 'posts' %}hide_nav_lt_large{%endif%}">
+        {% include nav_list nav=page.sidebar.nav %}
+      </div>
     {% endif %}
   {% endif %}
   </div>

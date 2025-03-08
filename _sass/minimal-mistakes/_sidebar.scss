@@ -372,3 +372,10 @@
     align-items: center;
   }
 }
+
+// 모바일 환경에서 포스트에서 navbar 삭제
+.hide_nav_lt_large {
+  @media (max-width: $large) {
+    display: none;
+  }
+}
