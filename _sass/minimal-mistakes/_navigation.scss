@@ -439,6 +439,23 @@
   }
 }
 
+.nav__items {
+  @media (max-width: $large) {
+    display: flex; /* Flexbox 활성화 */
+    list-style-type: none; /* 기본 리스트 스타일 제거 */
+    padding: 0; /* 기본 패딩 제거 */
+    margin: 0; /* 기본 마진 제거 */
+
+    li:not(:first-child) {
+      margin-left: 15px;
+    }
+
+    li {
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
 .nav__list .nav__items {
   margin: 0;
   font-size: 1.25rem;
@@ -447,38 +464,38 @@
     color: inherit;
   }
 
-  .active {
-    margin-inline-start: -0.5em;
-    padding-inline: 0.5em;
-    font-weight: bold;
-  }
+//   .active {
+//     margin-inline-start: -0.5em;
+//     padding-inline: 0.5em;
+//     font-weight: bold;
+//   }
 
-  @include breakpoint(max-width $large - 1px) {
-    position: relative;
-    max-height: 0;
-    opacity: 0%;
-    overflow: hidden;
-    z-index: 10;
-    -webkit-transition: 0.3s ease-in-out;
-    transition: 0.3s ease-in-out;
-    -webkit-transform: translate(0, 10%);
-    -ms-transform: translate(0, 10%);
-    transform: translate(0, 10%);
-  }
-}
+//   @include breakpoint(max-width $large - 1px) {
+//     position: relative;
+//     max-height: 0;
+//     opacity: 0%;
+//     overflow: hidden;
+//     z-index: 10;
+//     -webkit-transition: 0.3s ease-in-out;
+//     transition: 0.3s ease-in-out;
+//     -webkit-transform: translate(0, 10%);
+//     -ms-transform: translate(0, 10%);
+//     transform: translate(0, 10%);
+//   }
+// }
 
-@include breakpoint(max-width $large - 1px) {
-  .nav__list input:checked ~ .nav__items {
-    -webkit-transition: 0.5s ease-in-out;
-    transition: 0.5s ease-in-out;
-    max-height: 9999px; /* exaggerate max-height to accommodate tall lists*/
-    overflow: visible;
-    opacity: 1;
-    margin-top: 1em;
-    -webkit-transform: translate(0, 0);
-    -ms-transform: translate(0, 0);
-    transform: translate(0, 0);
-  }
+// @include breakpoint(max-width $large - 1px) {
+//   .nav__list input:checked ~ .nav__items {
+//     -webkit-transition: 0.5s ease-in-out;
+//     transition: 0.5s ease-in-out;
+//     max-height: 9999px; /* exaggerate max-height to accommodate tall lists*/
+//     overflow: visible;
+//     opacity: 1;
+//     margin-top: 1em;
+//     -webkit-transform: translate(0, 0);
+//     -ms-transform: translate(0, 0);
+//     transform: translate(0, 0);
+//   }
 }
 
 .nav__title {
@@ -576,4 +593,23 @@
   li ul li ul li ul li ul li ul > li a {
     padding-inline-start: 3.25rem;
   }
+}
+
+//
+
+.custom-nav-head-container {
+  display: flex;
+  // justify-content: end;
+  width: 100%;
+}
+
+.custom-nav-head {
+  @include breakpoint($large + 1px) {
+    display: none;
+  }
+
+  width: 30%;
+  // text-align: right;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid $border-color;
 }
