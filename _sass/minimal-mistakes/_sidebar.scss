@@ -148,6 +148,13 @@
   }
 }
 
+.custom-author-profile-container {
+  @media (max-width: $large) {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .author__content {
   display: table-cell;
   vertical-align: top;
@@ -158,6 +165,11 @@
     display: block;
     width: 100%;
     padding-inline: 0;
+  }
+
+  @media (max-width: $large) {
+    display: flex;
+    align-items: center;;
   }
 
   a {
@@ -349,5 +361,14 @@
   @include breakpoint($x-large) {
     width: initial;
     margin-inline-end: initial;
+  }
+}
+
+// 모바일 환경 내 아바타 프로필 위치 조정
+.h-card {
+  @media (max-width: $large) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }

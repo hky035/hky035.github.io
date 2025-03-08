@@ -11,7 +11,7 @@
       {% if s.text %}{{ s.text | markdownify }}{% endif %}
       {% if s.nav %}{% include nav_list nav=s.nav %}{% endif %}
     {% endfor %}
-    {% if page.sidebar.nav %}
+    {% if page.sidebar.nav and page.layout != 'posts'%} <!-- 모바일 화면 포스트 내에서 toggle mene 삭제 -->
       {% include nav_list nav=page.sidebar.nav %}
     {% endif %}
   {% endif %}

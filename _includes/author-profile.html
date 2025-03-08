@@ -3,6 +3,7 @@
 
 <div itemscope itemtype="https://schema.org/Person" class="h-card">
 
+  <div class="custom-author-profile-container">
   {% if author.avatar %}
     <div class="author__avatar">
       <a href="/about"> <!-- 이미지 클릭 시 about 페이지로 이동 -->
@@ -11,15 +12,16 @@
     </div>
   {% endif %}
 
-  <div class="author__content">
-    <h3 class="author__name p-name" itemprop="name">
-      <a class="u-url" rel="me" href="/about" itemprop="url">{{ author.name }}</a> <!-- 이름 클릭 시 about 페이지로 이동 -->
-    </h3>
-    {% if author.bio %}
-      <div class="author__bio p-note" itemprop="description">
-        {{ author.bio | markdownify }}
-      </div>
-    {% endif %}
+    <div class="author__content">
+      <h3 class="author__name p-name" itemprop="name">
+        <a class="u-url" rel="me" href="/about" itemprop="url">{{ author.name }}</a> <!-- 이름 클릭 시 about 페이지로 이동 -->
+      </h3>
+      {% if author.bio %}
+        <div class="author__bio p-note" itemprop="description">
+          {{ author.bio | markdownify }}
+        </div>
+      {% endif %}
+    </div>
   </div>
 
   <div class="author__urls-wrapper">
