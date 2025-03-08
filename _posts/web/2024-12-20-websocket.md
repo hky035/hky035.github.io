@@ -85,17 +85,17 @@ public class WebSocketConfig implements WebSocketConfigurer {
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
-	// 세션 List(Set)
+    // 세션 List(Set)
     private static Set<WebSocketSession> sessions = new HashSet<WebSocketSession>(); 
     private final ObjectMapper mapper = new ObjectMapper();
 
-	/* 클라이언트(세션) 연결 시 */
+    /* 클라이언트(세션) 연결 시 */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
     }
 
-	/* 클라이언트(세션)가 메시지를 송신할 경우 */
+    /* 클라이언트(세션)가 메시지를 송신할 경우 */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws IOException {
 
@@ -106,7 +106,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         log.info("message : {}", chat.message());
 
 
-		// 세션 List(Set)에 등록된 모든 세션에들에게 메시지 전달
+        // 세션 List(Set)에 등록된 모든 세션에들에게 메시지 전달
         sessions.forEach(s -> {
             try{
                 s.sendMessage(new TextMessage(chat.user() + ": " + chat.message()));
@@ -117,7 +117,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         });
     }
 
-	/* 클라이언트(세션) 연결 종료 시 */
+    /* 클라이언트(세션) 연결 종료 시 */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessions.remove(session);
@@ -247,8 +247,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 @Slf4j
 public class MessageController {
 
-    @MessageMapping("{stockId}")	// 앞에 pub 접두사가 자동으로 붙음, 메시지를 발행 pub
-    @SendTo("/sub/stocks")			// 특정 토픽을 sub한 클라이언트들에게 전달
+    @MessageMapping("{stockId}")    // 앞에 pub 접두사가 자동으로 붙음, 메시지를 발행 pub
+    @SendTo("/sub/stocks")          // 특정 토픽을 sub한 클라이언트들에게 전달
     public StockInfo message(@DestinationVariable String stockId) {
         log.info("stock id: {}", stockId);
         return StockInfo.builder()
@@ -778,14 +778,13 @@ public class ChatSubscriber implements MessageListener {
 // RedisConfig.java
 @Bean
 public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-
-	RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
     redisTemplate.setConnectionFactory(redisConnectionFactory);
     redisTemplate.setKeySerializer(new StringRedisSerializer());
     redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
     
     // ChatInfo.class에 관한 Serializer 추가
-	redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(ChatInfo.class));
+    redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(ChatInfo.class));
     redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(StockInfo.class));
     
     redisTemplate.setHashKeySerializer(new StringRedisSerializer());
@@ -826,7 +825,6 @@ public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisC
 @Slf4j
 @Component
 public class StockPublisher {
-
     private final RedisTemplate redisTemplate;
 
     @Scheduled(fixedRate = 5000)
