@@ -53,6 +53,11 @@
   }
 }
 
+// about 페이지 내 masthead position 설정 변경 
+.masthead-in-about {
+  position: relative !important;
+}
+
 .site-logo img {
   max-height: 2rem;
 }
