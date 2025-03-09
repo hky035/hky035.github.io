@@ -18,6 +18,12 @@
 
 <!-- For all browsers -->
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+
+<!-- /about 페이지 전용 css 로드 -->
+{% if page.url == '/about' %}
+  <link rel="stylesheet" type="text/css" href="/assets/css/custom/about.css">
+{% endif %}
+
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
 

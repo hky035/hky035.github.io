@@ -1,6 +1,7 @@
 {% capture logo_path %}{{ site.logo }}{% endcapture %}
 
-<div class="masthead">
+<!-- /about 페이지 내 masthead 스타일 설정을 위한 클래스 추가 -->
+<div class="masthead {{% if page.url == '/about' %}}masthead-in-about{{% endif %}}">
   <div class="masthead__inner-wrap">
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav">
