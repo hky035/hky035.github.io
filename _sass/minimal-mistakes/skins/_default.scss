@@ -5,6 +5,7 @@
 // Intentionally left blank
 
 // posts.html -> arhive.html 내 h 태그 permalink 적용을 위한 css 도입
+
 h1, h2, h3, h4, h5, h6 {
    .header-link {
       color: #3D4144 !important;
@@ -21,4 +22,28 @@ h1, h2, h3, h4, h5, h6 {
    &:hover .header-link {
       opacity: 1;
    }
+}
+
+// post description
+
+.desc-wrapper {
+   margin: 40px 0 40px;
+   padding-bottom: 20px;
+   border-bottom: 0.5px solid rgb(242, 243, 243);
+   width: 100%;
+}
+
+.desc-title {
+   font-weight: bold;
+   font-size: 12px;
+   color: rgb(190, 190, 190);
+   font-family: 'Noto Sans KR';
+   margin-bottom: 5px;
+
+}
+
+.desc-content {
+   color: #333;
+   font-size: 13.3px;
+   font-family: 'Noto Sans KR';
 }

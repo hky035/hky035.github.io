@@ -37,12 +37,7 @@ layout: default
 
     <!-- Page Description 추가-->
     {% if page.description -%}
-        <div style="margin: 20px 0 40px 0; border-left: 1px solid #ccc; padding: 0 15px; display: flex; flex-direction: column; width: 100%; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
-          <p style="font-weight: bold; font-size: 12px; color: #888; font-family: 'Noto Sans KR'; margin: 0; margin-left: 0; padding-top: 5px;">DESCRIPTION</p>
-          <p style="background: transparent; color: #333; font-size: 14px;font-family: 'Noto Sans KR'; margin: 3px 0; padding: 3px 0;">
-            {{page.description}}
-          </p>
-        </div>
+        {% include custom-description.html %}
       {%- endif %}
         
       <section class="page__content_for_permalink"> <!-- h 태그 permalink 적용을 위한 클래스 -->
