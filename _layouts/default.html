@@ -96,7 +96,12 @@
 
   <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}" dir="{% if site.rtl %}rtl{% else %}ltr{% endif %}">
     {% include_cached skip-links.html %}
-    {% include_cached masthead.html %}
+    {% if page.url == '/about' %}
+      {% include_cached masthead.html about="T" %}
+    {% else %}
+      {% include_cached masthead.html %}
+    {% endif %}
+    
       <!-- /about 페이지 내 스타일 조정을 위한 클래스 추가 -->
       <div class="initial-content {% if page.url == '/about' %}initial-content-in-about{% endif %}">
       {{ content }}
