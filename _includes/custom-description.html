@@ -1,5 +1,7 @@
-<div class="desc-wrapper">
+<div class="desc-wrapper  {% if page.layout == "archive" %} desc-wrapper-in-archive {% endif %}">
+    {% if page.layout == "posts" %}
     <div class="desc-title">DESCRIPTION</div>
+    {% endif %}
     <div class="desc-content">
       {{page.description}}
     </div>
