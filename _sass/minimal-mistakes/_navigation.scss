@@ -51,7 +51,12 @@
 
 .pagination {
   @include clearfix();
-  float: inline-start;
+  // float: inline-start;
+
+  // paginator 중앙 정렬
+  display: flex;
+  justify-content: center;
+
   margin-top: 1em;
   padding-top: 1em;
   width: 100%;
@@ -78,8 +83,8 @@
       line-height: 1.5;
       text-align: center;
       text-decoration: none;
-      color: $muted-text-color;
-      border: 1px solid mix(#000, $border-color, 25%);
+      color: #d1d1d1;
+      // border: 1px solid mix(#000, $border-color, 25%); // paginator 디자인 수정
       border-radius: 0;
 
       &:hover {
@@ -88,8 +93,8 @@
 
       &.current,
       &.current.disabled {
-        color: #fff;
-        background: $primary-color;
+        color: #000;
+        // background: $primary-color;
       }
 
       &.disabled {
