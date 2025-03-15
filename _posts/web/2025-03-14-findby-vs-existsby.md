@@ -115,6 +115,18 @@ void existsById_테스트() {
 
 &nbsp; 로그에서 보았던 count 쿼리 포맷을 확인할 수 있다. 
 
+## existsById()는 왜 count(*) 쿼리를 사용하는가?
+
+&nbsp; 그렇다면, 굳이 `existsById()`는 왜 성능이 좋지 못한 `count(*)` 쿼리를 사용하는 것일까?
+
+&nbsp; `findById()` vs `exsitsById()`에 관한 글이나 자료들은 많았지만, `count(*)` 쿼리를 생성하는 이유에 대한 자료들은 찾을 수가 없었다. 따라서, Spring Data Jpa의 깃허브에 [이슈](https://github.com/spring-projects/spring-data-jpa/issues/3814)를 통하여 질문을 남기기로 하였다.
+
+<img src="/assets/img/docs/web/findby-vs-existsby/existsbyid-answer.png" alt="existsbyid-answer"/>
+
+&nbsp; Spring Data의 Lead를 맡으시는 Mark Paluch 께서 답변을 해주셨다. 답변 내용을 요약하자면 아래와 같다.
+
+&nbsp; `existsById()`가 `count(*)` 쿼리를 사용하는 것에는 여러 가지 이유가 있지만, `count(*)`가 카운팅에 있어 가장 이상적인 형태로, 데이터베이스가 쿼리를 최적화할 수 있도록 해준다고 한다. 또한, Spring Data Jpa에서도 식별자(id)를 카운팅하고 싶지는 않지만, 식별자가 null일 수도 있다는 가능성 때문에 이 가능성에 대한 어떠한 가정도 허용하지 않겠다는 것이다. 
+
 # findByName vs existsByName
 
 &nbsp; 먼저 두 메서드를 비교히기에 앞서 JpaRepository에 정의된 메서드는 아래와 같다.
