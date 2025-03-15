@@ -91,15 +91,15 @@ void existsById_테스트() {
   </tr>
   <tr>
     <td style="width: 50%">
-      <img src="/assets/img/docs/web/findby-vs-existsby/findbyid.png" href="findbyid-1">
+      <img src="/assets/img/docs/web/findby-vs-existsby/findbyid.png" href="findbyid-1" style="height: 117.88px;">
     </td>
     <td style="width: 50%">
-      <img src="/assets/img/docs/web/findby-vs-existsby/existsbyid.png" href="existsbyid-1">
+      <img src="/assets/img/docs/web/findby-vs-existsby/existsbyid-1.png" href="existsbyid-1">
     </td>
   </tr>
 </table>
 
-&nbsp; 실행 결과에서 알 수 있듯이 `findById`에 대비해 `existsById`는 6배 이상의 시간이 소요된다. 이 시간의 차이는 실행되는 SQL 쿼리문의 차이에서 기인한 것이다. 
+&nbsp; 실행 결과에서 알 수 있듯이 `findById`에 대비해 `existsById`는 7배 이상의 시간이 소요된다. 이 시간의 차이는 실행되는 SQL 쿼리문의 차이에서 기인한 것이다. 
 
 &nbsp; id는 레코드의 PK로서 유일한 값이며 기본적으로 인덱싱이 되어있다. `select` 쿼리를 통하여 특정 값을 조회하였을 때, 조건에 부합한 값을 찾는다면 해당 값이 유일한 값이므로 해당 레코드를 바로 리턴한다. 이는 `findByName`과 같은 유니크하지 않은 일반 컬럼(필드)에 대비하여 속도의 차이가 더욱 극명하게 나는 이유이다.
 
@@ -131,6 +131,10 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 &nbsp; 실행 결과는 다음과 같다.
 
 <table style="border: 0.5px solid #d1d1d1; border-radius: 5px;">
+  <tr>
+    <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">findByName()</td>
+    <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">existsByName()</td>
+  </tr>
   <tr>
     <td>
       <img src="/assets/img/docs/web/findby-vs-existsby/findbyname-1.png" href="find-by-name-1">
