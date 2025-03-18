@@ -14,7 +14,7 @@ show_date: true
 
 &nbsp; 필자는 처음으로 협업을 하게 되면서 Git Workflow를 도입하여 브랜치를 통하여 작업을 관리하였다. 
 
-<img src="/assets/img/docs/etc/git-error.png" href="git-error" />
+<img src="/assets/img/docs/etc/git-merge-strategy/git-error.png" href="git-error" />
 
 &nbsp; 급하게 작업을 하며 feature 브랜치가 아닌 develop 브랜치에서 작업 후 이를 바로 develop 브랜치에 푸시하게 되었다. 푸시를 진행하자 위와 같은 에러 문구를 발견하였다. 
 
@@ -52,7 +52,7 @@ show_date: true
 
 &nbsp; 앞서 본 에러는 develop 브랜치에 `git push`를 하였을 떄 일어나는 에러였다.
 
-<img src="/assets/img/docs/etc/git-error.png" href="git-error" />
+<img src="/assets/img/docs/etc/git-merge-strategy/git-error.png" href="git-error" />
 
 &nbsp; 에러 문구에서 확인할 수 있듯이 해당 에러는 로컬에서 작업을 끝낸 후 develop 브랜치로 push를 보낼 때 <u>원격 develop 브랜치와 로컬 develop 브랜치 간 커밋이 다르기</u> 때문에 발생하는 에러이다.
 
