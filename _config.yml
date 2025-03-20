@@ -21,7 +21,7 @@ title                    : "I am hky035"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "hky035"
-description              : "배움에는 열정적, 나눔에는 적극적인 삶을 지향하는 백엔드 개발자를 희망하는 대학생 허기영입니다."
+description              : "배움에는 열정적, 나눔에는 적극적인 삶을 지향합니다. 긍정적인 가치를 공유할 수 있는 백엔드 개발자를 희망하는 대학생 허기영입니다."
 url                      : "https://hky035.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "hky035/hky035.github.io"
