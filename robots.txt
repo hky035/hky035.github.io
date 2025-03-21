@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hky035.github.io/my-sitemap.xml
