@@ -16,7 +16,9 @@ categories:
     url: /about
   - title: "Web"
     url: /web
-  - title: "Essay"
-    url: /essay
   - title: "DevOps"
     url: /devops
+  - title: "ETC"
+    url: /etc 
+  - title: "Essay"
+    url: /essay
