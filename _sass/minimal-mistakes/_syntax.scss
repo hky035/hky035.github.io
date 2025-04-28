@@ -6,7 +6,7 @@
   background-color: rgba(0,0,0,0.05);
   padding: 1px 3px;
   border-radius: 3px;
-  font-family: "Fira Code";
+  font-family: $code;
 }
 
 div.highlighter-rouge,
@@ -16,7 +16,6 @@ figure.highlight {
   // background: $base00;
   background: rgba(0,0,0,0.035); /* change code block background color*/
   color: $base05;
-  // font-family: $monospace;
   font-family: $code;
   font-size: $type-size-6;
   line-height: 1.8;
