@@ -374,3 +374,14 @@ input[type="submit"],
   text-underline-offset: 3px;
   font-weight: normal;
 }
+
+/* hightlight underline */
+.underline-highlight {
+  box-shadow: inset 0 -12px 0 yellow;
+}
+
+/* code */
+.code {
+  font-family: $code;
+  font-size: 14.5px;
+}
