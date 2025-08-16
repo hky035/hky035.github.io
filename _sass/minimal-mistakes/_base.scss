@@ -170,11 +170,15 @@ button:focus {
 /* code */
 
 tt,
-code,
 kbd,
 samp,
 pre {
   font-family: $code;
+}
+
+code {
+  font-family: $code;
+  font-size: 14.5px;
 }
 
 pre {
