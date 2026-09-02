@@ -1,6 +1,6 @@
 ---
 layout: posts
-title:  "Transactional Outbox Pattern 도입기 3 - 메시지 브로커 및 이벤트 외부 발행 구조 도입"
+title: "도메인 이벤트 재발행 구조 도입기 2 - 메시지 브로커 및 이벤트 외부 발행 구조 도입"
 author_profile: true
 sidbar:
   nav: "main"

@@ -1,6 +1,6 @@
 ---
 layout: posts
-title:  "Transactional Outbox Pattern 도입기 2 - Event Outbox의 저장"
+title: "도메인 이벤트 재발행 구조 도입기 1 - Event Outbox의 저장"
 author_profile: true
 sidbar:
   nav: "main"

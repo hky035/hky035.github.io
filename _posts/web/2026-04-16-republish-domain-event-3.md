@@ -1,6 +1,6 @@
 ---
 layout: posts
-title:  "Transactional Outbox Pattern 도입기 4 - 이벤트 아웃박스 폴링을 통한 이벤트 발행"
+title: "도메인 이벤트 재발행 구조 도입기 3 - 이벤트 아웃박스 폴링을 통한 이벤트 발행"
 author_profile: true
 sidbar:
   nav: "main"
