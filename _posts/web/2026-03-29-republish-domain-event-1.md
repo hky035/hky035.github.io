@@ -5,204 +5,34 @@ author_profile: true
 sidbar:
   nav: "main"
 category: "web"
-description: "여행 기록 관리 플랫폼 '여기가' 프로젝트를 진행하며, 비밀번호 초기화 이메일 전송 기능 개발을 담당하게 되었다. 기능 구현 후 이메일 전송 보장 기능을 도입해야하는 추가적 이슈가 발생하였다. 여러 방법들을 모색하던 중 '트랙잭션 아웃박스 패턴'에 대해 알게되었다. 이번 포스팅에서는 트랜잭션 아웃박스 패턴 구현 중 이벤트 아웃박스(Event Outbox)를 저장하는 과정에 대해 알아보고자 한다."
+description: "&nbsp; 여행 기록 관리 플랫폼 '여기가' 프로젝트를 진행하며 이메일 인증·비밀번호 초기화 이메일 전송 기능 개발을 담당하게 되었다. 이메일 전송은 외부 메일 서버를 거쳐 실행되는 작업으로 Network I/O 등 시간이 오래 걸리는 작업이다. 따라서, 핵심 비즈니스 로직과 이메일 발송 로직을 분리하여 결합도를 낮추고, 향후 메일 서버 분리의 확장성을 염두에 두고 이메일 발송 로직을 이벤트 기반 아키텍처(EDA)로 분리하였다. EDA 도입 후 메시지 브로커로 이벤트가 발행되지 않아 이벤트가 유실되는 문제를 겪고 이에 대한 해결 방법을 모색하던 중 'Transactional Outbox Pattern'을 알게 되었다. 이번 포스팅에서는 각 도메인 이벤트를 일관된 EventOutbox로 변환하여 저장하는 과정을 구현한 경험을 공유하고자 한다."
 published: true
 show_date: true
 ---
 
-# Transactional Outbox Pattern 중 Event Outbox 저장 흐름
+# 서론
 
-![event-store-process](/assets/img/docs/web/tx-outbox-2/event-store-process.png)
+&nbsp; 여행 기록 관리 플랫폼 '여기가' 프로젝트를 진행하며 이메일 인증·비밀번호 초기화 이메일 발송 기능을 구현하였다. 이메일 발송은 외부 메일 서버와 통신하는 Network I/O 작업이므로, 핵심 비즈니스 로직과 결합도를 낮추고 향후 메일 발송 기능을 별도 서비스로 분리할 수 있도록 이벤트 기반 구조를 도입하였다.
 
-&nbsp; 트랜잭션 아웃박스 패턴은 아래와 같은 처리 흐름을 가진다.
+&nbsp; 그러나 이벤트를 메시지 브로커로 전달하는 과정에서 발행에 실패하면 해당 이벤트를 다시 처리하기 어렵다는 문제가 있었다. 이를 해결할 방법을 찾던 중 Transactional Outbox Pattern(트랜잭션 아웃박스 패턴)을 알게되었고, 이 패턴의 이벤트 영속화 아이디어를 참고하여 도메인 이벤트 재발행 구조를 도입하였다.
 
-- 도메인 이벤트 발행 (내부 발행)
-- 도메인 이벤트 리스너 - 이벤트 저장 (아웃박스 변환)
-- 도메인 이벤트 리스너 - 이벤트 발행 (발행 후 아웃박스 상태 변경)
-- 이벤트 폴러 - 아웃박스 조회 후 이벤트 발행
-- 메시지 브로커
-- 이벤트 소비자
+&nbsp; 이번 글에서는 서로 다른 도메인 이벤트를 공통된 EventOutbox로 변환하고 저장하는 구조를 구현한 과정을 다룬다.
 
-&nbsp; 트랜잭션 아웃박스 패턴의 구현은 변형되어 다양한 방식이 존재한다. [Chris Richardson의 Microarchitecture - Pattern: Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html)에 따르면, 이벤트 발행은 메시지 릴레이(Message Relay = Event Poller)가 담당한다. 
+# 본론
 
-&nbsp; 그러나, 필자는 Spring Event의 `@TransactionalEventListener`를 통해서 트랜잭션 시점에 따른 이벤트 기록, 이벤트 외부 발행을 진행하여 이벤트 폴러 외에도 이벤트 외부 발행 기능을 담당하는 주체가 하나 더 존재한다. 이러한 구조를 선택한 이유는 향후 포스팅에서 서술한다.
+# # 문제 정의
 
-&nbsp; 이번 포스팅에서 집중할 부분은 **'이벤트 저장'**이다.
+&nbsp; 도메인 이벤트에 대한 아웃박스 저장·이벤트 발행 구조를 구현하는데 있어 처음에는 "도메인 이벤트 별 아웃박스 저장·발행 로직을 구현하면 되지 않을까?"는 생각을 하였다. 실제로도 이러한 생각을 기반으로 구현을 시작하였다. 
 
-&nbsp; Spring Event를 통해서 내부 발행된 이벤트는 이벤트 저장용 리스너에 의해 Event Outbox로 변환되어 저장된다.
+&nbsp; 그러나, 이메일 인증 이벤트에 대한 아웃박스 저장 로직을 구현한 뒤 비밀번호 초기화 이벤트에도 같은 구조를 적용하는 과정에서, <u>도메인 이벤트의 종류만 다를 뿐 거의 동일한 로직을 반복해서 구현하고 있다는 점이 비효율적</u>으로 느껴졌다. 
 
-&nbsp; 본론에 들어가기에 앞서 '이벤트 저장' 로직의 흐름은 다음과 같다.
+# # 해결 방안
 
-- `DomainEvent` 상위 추상 클래스 정의 및 Spring Event를 사용한 내부 발행
-- 각 비즈니스 로직 내 이벤트 발행 로직 적용 및 도메인 이벤트 구현
-- `@TransactionalEventListener`를 사용한 이벤트 기록용 리스너 정의
-- 이벤트 기록용 리스너에서 이벤트를 아웃박스 엔티티(`EventOutbox`) 형태로 전환하여 저장
+&nbsp; 위 문제를 해결하기 위해 도메인 이벤트 타입과 관계없이 공통으로 적용할 수 있는 아웃박스 변환·저장 흐름이 필요하다고 판단하였다.
 
-&nbsp; 크게 위와 같은 흐름으로 진행되며 이를 적용하기 위해 여러 클래스들을 구현하였다. 
+&nbsp; 따라서, 이에 모든 도메인 이벤트가 공통 상위 타입 `DomainEvent`를 상속하고, 하나의 리스너가 이벤트를 `EvnetOutbox` 엔티티로 변환해 저장하는 구조로 재설계하였다. 이에 대한 구현 과정을 이번 포스팅에서 서술할 것이다.
 
-&nbsp; 본론에서 Event 클래스, Event Outbox 엔티티의 구조와 저장 흐름에 대해 설명하고자 한다.
-
-# DomainEvent 클래스와  Spring Event를 사용한 내부 이벤트 발행
-
-&nbsp; [Spring Modulith - Working with Application Events](https://docs.spring.io/spring-modulith/reference/events.html)에서는 `ApplicationEventPublisher`을 통해서 이벤트를 발행하여 클래스 간 결합도를 낮출 수 있다고 명시되어 있다.
-
-&nbsp; 또한, `ApplicationEventPublisher`를 통해서 발행한 이벤트는 `@EventListener` 또는 `@ApplicationModuleListener`, `@TransactionalEventListener`를 통해서 이벤트 리스닝이 가능하다.
-
-&nbsp; 특히, `@TransactionalEventListener`는 트랜잭션 단계(Phase)에 따라 호출되는 이벤트 리스너로, 트랜잭션 단계는 아래와 같이 4가지 종류가 존재한다.
-
-- <code>AFTER_COMMIT</code>: 트랜잭션 커밋 후 (default)
-- <code>AFTER_COMPLETION</code>: 트랜잭션 종류 후 (커밋/롤백에 상관없이)
-- <code>AFTER_ROLLBACK</code>: 트랜잭션 롤백 후
-- <code>BEFORE_COMMIT</code>: 트랜잭션 커밋 전
-
-&nbsp; 이벤트의 저장 단계에서 필요한 트랜잭션 단계(시점)는 **커밋 전(<code>BEFORE_COMMIT</code>)**이다.
-
-&nbsp; 트랜잭션이 커밋되기 전 이벤트(아웃박스)가 저장소에 기록되어야지만 향후 저장된 이벤트(아웃박스)를 조회하여 메시지 발행이 가능하다.
-
-## DomainEvent 
-
-&nbsp; `DomainEvent`는 특정 비즈니스 도메인에서 이벤트가 발생하였을 때 발행할 모든 이벤트 상위 추상 클래스이다.
-
-&nbsp; `ApplicationEventPublisher`에서 발행한 이벤트는 리스너에서 인자로 명시한 클래스 타입에 따라 이벤트를 가져와 처리하게 된다. `DomainEvent`라는 상위 추상 클래스를 정의하여 모든 이벤트에 일관된 내부 발행 로직을 적용하고, 이벤트 리스너에서는 공통 로직은 `DomainEvent`, 개별 실행 로직은 구체적 타입을 명시하여 처리한다.   
-
-&nbsp; 또한, 로그 기록과 같은 추적 작업에 `DomainEvent`에 대한 리스너를 추가하여 사용하는 등의 작업도 가능하다.
-
-```java
-@Getter
-public abstract class DomainEvent {
-    private final ZonedDateTime createdAt;
-    private final String eventId;
-    
-    public DomainEvent() {
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.eventId = UlidCreator.getUlid().toString();
-    }
-}
-```
-
-&nbsp; `DomainEvent`는 모든 클래스의 상위 추상 클래스로, 모든 클래스가 포함하고 있어야할 속성을 가진다.
-
-&nbsp; 이벤트 발행 시각을 나타내는 `createdAt`과 개별 이벤트 고유번호를 나타내는 `eventId`를 가진다.
-
-&nbsp; 이벤트마다 해당 이벤트가 유효한 시간이 다르며, 이벤트를 추적하기 위해서는 이벤트를 식별하기 위한 식별자가 필요하기 때문에 위와 같은 속성을 정의하였다.
-
-&nbsp; `createdAt` 속성은 서버 환경에 따라 변하는 것을 방지하기 위하여 `ZonedDateTime` 타입을 사용하여 코드 내에 TimeZone(Asia/Seoul)을 명시하였다.
-
-&nbsp; `eventId`는 이벤트를 식별하기 위한 고유번호로 충돌 방지와 효율적인 저장 방식을 고려하여 ULID를 사용하였다.
-
-&nbsp; <u>이벤트 식별자로 UUID대신 ULID를 사용한 이유</u>는 [이전 포스팅](etc/uuid-vs-ulid/)에서 정리하였듯 이벤트 아웃박스의 저장에 있어 성능적인 부분을 고려하였기 때문이다.
-
-&nbsp; 고유 식별자의 크기를 줄여 이벤트 아웃박스 테이블이 차지하는 페이지의 크기를 줄이고, Key가 시간에 따라 순차적으로 증가하는 양상을 보여 레코드 삽입 시 인덱스 트리 구조 갱신을 최소화하기 위해 ULID를 사용하였다. 
-
-&nbsp; 이벤트 아웃박스는 모든 발생 이벤트들이 메시지 브로커로 발행되기 전 임시로 저장되기 때문에 다양한 도메인에서 많은 이벤트들이 발생하게 되어 이러한 성능적 개선점을 도입하게 되었다.
-
-## PasswordResetEvent
-
-```java
-@Getter
-public class PasswordResetEvent extends DomainEvent {
-    private final String email;
-    private final String code;
-    private final ZonedDateTime expiredAt;
-    
-    public PasswordResetEvent(String email, String code, int expiration) {
-        super();
-        this.email = email;
-        this.code = code;
-        this.expiredAt = getCreatedAt().plusSeconds(expiration);
-    }
-}
-```
-
-&nbsp; `PasswordResetEvent`는 비밀번호 초기화 요청을 나타내는 이벤트 클래스로 `DomainEvent`를 구현한 클래스이다. 트랜잭션 아웃박스 패턴을 적용하는 모든 이벤트 클래스들이 `DomainEvent`를 상속받아 구현한다.
-
-&nbsp; `DomainEvent`에 속하는 공통 적용 속성을 제외하고, 비밀번호 초기화 이벤트에 맞는 속성 `email`, `code`(인증코드), `expiredAt`(만료 기한)을 가진다.
-
-### cf. 이벤트의 구조(속성)
-
-&nbsp; 이메일과 같은 부가로직 수행이 아닌, CQRS 환경이나 여러 모듈 간 데이터를 공유하여 저장하고 있는 MSA 환경일 경우 데이터베이스 갱신 작업 전파를 위한 트랜잭션 아웃박스 패턴을 구현하기도 한다.
-
-&nbsp; 실제로 MSA로 운영되는 서비스들의 기술블로그에서는 이러한 데이터 갱신 이벤트 전파의 목적으로 트랜잭션 아웃박스 패턴을 적용하는 사례도 보았다. 
-
-&nbsp; 해당 경우에는 부가 로직 실행이 아닌 '갱신된 데이터의 변경사항을 확인'하는 것이 목적이기에 **제로 페이로드(Zero Payload) 방식**을 사용하기도 한다.
-
-&nbsp; 제로 페이로드 방식은 데이터가 갱신된 A 모듈에서는 엔티티의 주키(PK)만 담은 이벤트를 발행한다. 이후, 이벤트를 수신한 B 모듈에서는 갱신된 엔티티의 PK를 확인하고 해당 키를 통해 A 모듈에 엔티티 조회 요청을 보낸다. B 모듈은 갱신된 엔티티를 응답받아 데이터를 갱신하는 등의 작업을 수행한다.
-
-&nbsp; 단순히, 주키만 전달하는 것이 아닌 갱신된 엔티티의 필드나 이유 등을 나누고 이를 문서화하여 별도로 관리하여 필요에 맞게 유연하게 변경하여 사용하기도 한다.
-
-## 비밀번호 초기화 요청 로직 
-
-```java
-@Service
-@RequiredArgsConstructor
-public class PasswordManagementService {
-    private final UserService userService;
-    private final PasswordCodeService passwordCodeService;
-    private final DomainEventPublisher eventPublisher;
-    
-    @Value("${auth.expiration.password-reset}")
-    private int passwordResetExpiration;
-    
-    /**
-     * 비밀번호 초기화 요청 메서드
-     *
-     * <p> 사용자 확인을 위한 확인용 코드 생성 및 저장
-     *
-     * <p> 해당 사용자에게 비밀번호 초기화 링크 메일 전송
-     *
-     * <p> 최종적으로 비밀번호 초기화 요청 이벤트 발행
-     *
-     * @param email     사용자 이메일
-     * @param username  사용자 아이디
-     * @throws CustomException AuthErrorType.MISMATCHED_EMAIL_OR_USERNAME - 이메일 또는 아이디가 불일치하는 경우
-     */
-    @Transactional
-    public void requestPasswordReset(String email, String username) {
-        if (!userService.existsIncludeDeletedByEmailAndUsername(email, username)) {
-            throw new CustomException(AuthErrorType.MISMATCHED_EMAIL_OR_USERNAME);
-        }
-
-        if (passwordCodeService.existsCode(email)) {
-            throw new CustomException(AuthErrorType.PASSWORD_RESET_TIME_LIMIT);
-        }
-        
-        String code = PasswordCodeGenerator.generate();
-        passwordCodeService.save(email, code, passwordResetExpiration);
-        
-        // PasswordResetEvent를 생성해 발행
-        eventPublisher.publish(new PasswordResetEvent(email, code, passwordResetExpiration));
-    }
-    // ...
-}
-```
-
-&nbsp; 비밀번호 초기화 요청 로직에서는 비밀번호 초기화 이메일 전송 시, 비밀번호 초기화 가능한 링크와 인증번호를 전송하게 된다.
-
-&nbsp; 인증번호 생성이 완료된 후, 이메일을 보내기 위한 `PasswordResetEvent`를 생성해 발행하게 된다.
-
-&nbsp; 이벤트 기반 구조를 도입하여 메서드 응집도 및 비밀번호 초기화 요청 유즈케이스와 이메일 발행 로직간 강결합도를 줄일 수 있다.
-
-## DomainEventPublisher
-
-```java
-@Component
-@RequiredArgsConstructor
-public class DomainEventPublisher {
-    private final ApplicationEventPublisher applicationEventPublisher;
-    
-    public void publish(DomainEvent event) {
-        applicationEventPublisher.publishEvent(event);
-    }
-}
-```
-
-&nbsp; `DomainEventPublisher`는 `ApplicationEventPublisher`를 감싼 클래스로 **내부 이벤트 발행**을 담당한다.
-
-&nbsp; 내부 이벤트 발행은 Spring Event의 Event 발행 구조를 의미한다.
-
-# EventOutbox
-
-&nbsp; 이벤트 아웃박스는 DomainEvent를 데이터베이스에 저장하기 위한 아웃박스로 변환한 엔티티를 의미한다.
+# # EventOutbox 구조
 
 ```java
 @Getter
@@ -255,81 +85,87 @@ public class EventOutbox {
 }
 ```
 
-&nbsp; 이벤트 아웃박스의 각 필드에 대한 설명은 다음과 같다.
+&nbsp; 아웃박스 테이블의 PK는 IDENTITY 전략으로 생성되는 Long 값을 사용하였다. 순차 증가하는 값을 클러스터드 인덱스 키로 사용하면 새로운 레코드가 주로 인덱스의 마지막 영역에 삽입되므로, 무작위 키를 사용할 때보다 페이지 분할과 단편화 가능성을 줄일 수 있기 때문이다.
 
-### 1. `Long id`
+&nbsp; 애플리케이션과 메시지 브로커에서는 데이터베이스가 생성한 PK를 이벤트 발행 전에 알기 어렵기 때문에, 이벤트 자체를 식별하기 위한 `eventId`를 별도로 두었다. `eventId`에는 생성 시각을 포함해 대체로 시간순 정렬이 가능한 ULID를 사용하였다. 이를 보조 인덱스로 지정하며 이벤트 조회 시 속도를 높이고자 하였다. 이는 [UUID vs ULID, 인덱스로 사용하는 값에 따른 성능 비교
+](/etc/uuid-vs-ulid/) 포스팅에서 검증을 기반으로 선택한 결정이다.
 
-&nbsp; 이벤트 아웃박스의 고유번호로 Long(BIGINT) 타입으로 저장된다.
+&nbsp; 현재는 도메인 이벤트의 클래스 이름을 `eventType`으로 저장하였다. 구현은 단순하지만 클래스명이나 패키지가 변경되면 기존 이벤트를 역직렬화하기 어려워질 수 있기 때문이다.
 
-&nbsp; 주 키(Primary Key)의 경우 키-레코드 쌍으로 저장이되기 때문에 주키는 데이터베이스에서 생성하는 순차성을 완전히 보장하는 전략으로 선택하였다.
+&nbsp; 각 도메인 이벤트는 JSON 문자열 형태로 직렬화되어 `payload` 컬럼에 저장된다.
 
-### 2. `String eventId`
-
-&nbsp; 이벤트를 식별하기 위한 고유번호로 ULID를 문자열 형태로 변환하여 저장한다.
-
-&nbsp; Primary Key는 데이터베이스에서 키를 생성하는 <code>IDENTITY</code> 타입을 사용했기 때문에 애플리케이션 단에서 키를 알기 어렵다.
-
-&nbsp; 따라서, 애플리케이션 단계에서 별도의 키를 생성하여 이벤트를 추척할 수 있도록 하였다.
-
-&nbsp; 또한, `eventId`를 통한 빠른 조회가 가능하도록 `eventId` 컬럼을 통한 보조 인덱스에도 사용된다. 
-
-> `event_id` 컬럼에 대한 unique 설정을 통해 자동으로 인덱스를 생성해 사용할 수도 있다.
-
-### 3. `String eventType`
-
-&nbsp; 이벤트의 클래스 타입을 나타내는 속성이다.
-
-&nbsp; 이벤트는 아웃박스 형태로 저장될 때, 이벤트 자체는 JSON 형태의 문자열로 직렬화되어 저장된다.
-
-&nbsp; 이후, 이벤트 아웃박스를 조회할 때 이벤트를 다시 복구하기 위해서 타입이 필요하다. 따라서, 이벤트의 클래스 타입을 저장한다.
-
-> 적용된 외부 메시지브로커(RabbitMQ)는 JSON 형태의 문자열 메시지도 발행이 가능하기 때문에 실제로는 이벤트를 조회할 때 별도로 변환하는 과정은 존재하지 않으나, 이벤트 추적 및 향후 확장을 위하여 이벤트 클래스 타입을 동시에 저장한다.
-
-### 4. `String payload`
-
-&nbsp; 실제로 도메인 이벤트 객체가 JSON 형태의 문자열로 직렬화되어 저장되는 컬럼이다.
-
-&nbsp; 해당 컬럼이 이벤트를 나타내는 핵심 페이로드이며, 이를 역직렬화하거나 문자열 그대로 발행하는 등의 작업에 사용된다.
-
-### 5. `EventOutboxStatus status`
+&nbsp; 도메인 이벤트의 재발행을 위해서는 각 이벤트의 발행 상태를 알아야한다. 따라서, `EventOutboxStatus`를 통해 이벤트의 발행 여부를 파악한다. 
 
 ```java
 public enum EventOutboxStatus {
-    WAITING, PUBLISHED, FAILED
+    WAITING,    // 메시지 브로커로 발행 전(초기 생성 후 기본값)
+    PUBLISHED,  // 메시지 브로커로 발행 성공
+    FAILED      // 메시지 브로커로 발행 실패
 }
 ```
 
-&nbsp; 이벤트 아웃박스의 상태를 나타내는 클래스이다.
+&nbsp; `createdAt`을 통해 도메인 이벤트의 생성 시각을 저장한다.
 
-&nbsp; 이벤트 발행 대기, 발행 성공, 발행 실패의 상태를 가진다. 
+&nbsp; 현재 다루는 이벤트에는 인증 번호의 유효 시간이 존재한다. 이벤트가 뒤늦게 발행되면 이미 만료된 인증 코드를 사용자에게 전달할 수 있으므로, 일정 시간이 지난 이벤트는 재발행 대상에서 제외해야 한다. 또한 지속적으로 발행에 실패하는 이벤트를 무제한으로 재시도하면 시스템 자원을 낭비할 수 있다. 이를 반영한 재시도 정책을 적용하기 위해 실패 횟수인 `failCount`와 마지막 재시도 시각인 `lastRetriedAt`을 저장하였다.
 
-&nbsp; 필요에 따라 상태를 세분화할 수 있다.
+# # DomainEventListener
 
-### 6. `LocalDateTime createdAt`
+&nbsp; 앞서 모든 도메인 이벤트의 일괄적인 처리를 위해 저장·발행 구조를 통일시켜야한다는 해결 방안을 찾았다.
 
-&nbsp; 이벤트의 생성 시간을 나타내는 컬럼이다.
+&nbsp; 따라서, 도메인 이벤트를 저장·발행하는 구조는 도메인 이벤트가 더 추가되더라도 큰 변화없이 기존 흐름 안에 포함될 수 있도록 만들어야한다.
 
-&nbsp; `DomainEvent` 추상 클래스의 `createdAt`과 동일하다.
-
-### 7. `LocalDateTime lastRetriedAt`
-
-&nbsp; 마지막으로 재시도한 시각을 나타내는 컬럼이다.
-
-&nbsp; 특정 이벤트의 경우에는 이벤트 자체의 유효기간이 존재하기도 하며, 향후 이벤트 추적을 위해서도 사용되는 컬럼이다.
-
-### 8. `int failCount` 
-
-&nbsp; 이벤트의 외부 발행 시도 실패 횟수를 나타내는 컬럼이다.
-
-&nbsp; 각 이벤트의 성격에 맞게 실패 횟수를 통한 발행 제어가 가능하다. 정확하게는 이벤트 폴러에서 특정 횟수 이상 실패한 이벤트는 조회하지 않도록하여 조회 부담을 줄인다.
-
-## DomainEventRecordListener
+&nbsp; 이것은 **"모든 도메인 이벤트는 공통 추상 클래스인 `DomainEvent` 상속한다"**는 규칙을 통해 해결할 수 있다.
 
 ```java
-public interface DomainEventListener {
-    void handleEvent(DomainEvent event);
+@Getter
+public abstract class DomainEvent {
+    private final ZonedDateTime createdAt;
+    private final String eventId;
+    
+    public DomainEvent() {
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.eventId = UlidCreator.getUlid().toString();
+    }
 }
 ```
+
+&nbsp; 이메일 인증 이벤트 `EmailVerificationEvent`와 비밀번호 초기화 이벤트 `PasswordResetEvent`가 모두 `DomainEvent`를 상속하고 있다.
+
+```java
+@Getter
+public class EmailVerificationEvent extends DomainEvent {
+    private final String email;
+    private final String code;
+    private final ZonedDateTime expiredAt;
+    
+    public EmailVerificationEvent(String email, String code, int expiration) {
+        super();
+        this.email = email;
+        this.code = code;
+        this.expiredAt = getCreatedAt().plusSeconds(expiration);
+    }
+}
+```
+
+```java
+@Getter
+public class PasswordResetEvent extends DomainEvent {
+    private final String email;
+    private final String code;
+    private final ZonedDateTime expiredAt;
+    
+    public PasswordResetEvent(String email, String code, int expiration) {
+        super();
+        this.email = email;
+        this.code = code;
+        this.expiredAt = getCreatedAt().plusSeconds(expiration);
+    }
+}
+```
+
+&nbsp; 결국 각 구현 타입에 따라 처리할 수도 있지만, 모든 도메인이 공통으로 상속하고 있는 타입 `DomainEvent`를 활용하여 일괄적인 이벤트 저장·발행 로직을 구현할 수 있다.
+
+## ## DomainEventRecordListener
 
 ```java
 @Component
@@ -351,33 +187,45 @@ public class DomainEventRecordListener implements DomainEventListener {
     }
 }
 ```
+&nbsp; `DomainEventRecordListener`는 도메인 이벤트를 `EventOutbox`로 변환하고 저장을 담당하는 리스너이다.
 
-&nbsp; `DomainEventRecordListener`는 이벤트를 아웃박스로 변환하여 `event_outbox` 테이블에 기록하기 위한 이벤트 리스너이다.
+&nbsp; `EventOutbox.payload` 필드에 각 도메인 이벤트를 JSON 문자열로 직렬화하여 저장한다.
 
-&nbsp; `@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)`를 사용하여 <u>트랜잭션이 커밋되기 전</u>에 이벤트가 저장되도록 한다.
+&nbsp; 이때 `event.getClass().getName()`으로 구체적인 이벤트 타입을 확인하여 `eventType`에 기록한다. 이를 통해 아웃박스를 조회한 뒤 `payload`를 원래 이벤트 타입의 객체로 역직렬화할 수 있다.
 
-&nbsp; 부가로직이라 할지라도 이벤트가 아웃박스 형태로 저장이 되어야지만 이후 다른 모듈로 전달되어 부가 로직들을 실행할 수 있다. 따라서, 트랜잭션 커밋 이전 시점에 실행하여 **핵심 비즈니스 로직과 이벤트 아웃박스 저장 로직 실행의 원자성을 보장**한다. 
 
-&nbsp; 각 이벤트는 `ObjectMapper`를 사용해 JSON 형태의 문자열로 변환되어 `EventOutbox.payload` 속성으로 저장된다.
+![save-outbox](/assets/img/docs/web/republish-domain-event-1/save-outbox.png)
 
-# 이벤트 저장 흐름 정리
+&nbsp; 이는 TransactionalOutboxPettern의 핵심 아이디어인 '이벤트 영속화'에 해당한다.
 
-![evnet-store-process-2](/assets/img/docs/web/tx-outbox-2/event-store-process-2.png)
+&nbsp; Spring Event의 `@TransactionalEventListener`을 활용하여 트랜잭션 커밋 이전 시점(`BEFORE_COMMIT`)에 이벤트 아웃박스를 기록한다.
 
-&nbsp; 위 과정을 통하여 트랜잭션 아웃박스 패턴 중 '이벤트 저장' 로직에 관여하는 주요 클래스들에 대해 알아보았다.
+&nbsp; 커밋 이전 시점에 아웃박스 저장 로직을 실행하여 <u style="font-weight: bold;">핵심 비즈니스 로직 트랜잭션과 원자적으로 실행</u>하도록 한다.
 
-&nbsp; 저장 흐름에서 핵심은 Spring Event를 사용하여 트랜잭션이 커밋되기 전에 이벤트를 아웃박스 형태로 저장하는 것이다.
+### ### '여기가'에서는 원자적으로 실행이 되는가?
 
-&nbsp; 내부 이벤트를 발행하는 과정에서 `DomainEvent` 상위 추상 클래스를 적용하여 각 이벤트마다 별도의 기록용 리스너를 사용하는 것이 아니라 부모 타입인 `DomainEvent`를 리스닝하는 이벤트 리스너 하나만 정의하여 기록 로직을 통합하였다. 
+&nbsp; 위 설명처럼 트랜잭션 아웃박스 패턴의 핵심은 비즈니스 로직을 수행하는 트랜잭션과 아웃박스 기록을 동일한 트랜잭션에 묶어 원자적으로 실행하는 것이다. 두 작업이 하나의 트랜잭션에 참여하면 함께 커밋되거나 롤백되므로, 비즈니스 데이터의 저장과 이벤트 아웃박스의 기록도 원자적으로 수행할 수 있게 된다.
 
-&nbsp; 각 비즈니스 로직은 부가 로직을 직접 수행하는 것이 아닌 `DomainEvent`를 상속받은 이벤트 객체를 생성하여 내부로 발행하는 책임을 가지게 된다.
+&nbsp; 그러나, '여기가'에서는 이메일 인증·비밀번호 초기화에 사용하는 인증 번호를 Redis에 저장하고, 이벤트 아웃박스는 RDB에 저장한다. 즉, 두 작업은 동일한 원자적 경계 안에 존재하지 않는다는 것이다.
 
-&nbsp; 내부로 발행된 이벤트는 우선 트랜잭션 커밋 전에 `EventOutbox` 엔티티로 변환되어 저장소에 저장된다. 이때, `@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)` 어노테이션을 통해 비즈니스 로직과 이벤트 아웃박스 저장을 원자적으로 실행한다. 
+&nbsp; 만약, Redis 저장이 실패하여 예외가 전파되면 이후 내부 이벤트(`DomainEvent`)는 발행되지 않으므로 아웃박스 기록도 되지 않는다. 그러나, Redis에 인증 번호 저장은 성공하였으나 아웃박스의 기록에 실패하면 Redis의 인증 번호는 존재하나, RDB의 아웃박스는 존재하지 않는 불일치가 발생한다. 이 경우 이메일 발송 이벤트가 기록되지 않아 사용자는 인증 번호를 전달받지 못하며, 해당 코드는 TTL이 만료될 때까지 Redis에 남게 된다.
 
----
+&nbsp; 인증 코드와 아웃박스를 하나의 RDB에 저장하면 두 작업을 동일한 트랜잭션으로 묶어 완전히 원자적으로 실행할 수 있다. Redis 저장을 유지하면서 아웃박스 저장 실패 시 인증 번호를 삭제하는 보상 로직을 추가할 수도 있지만, 보상 동작 자체도 실패할 수 있으므로 Transactional Outbox와 동일한 원자성을 보장하지는 않는다.
 
-# 마무리하며
+&nbsp; 그러나, 현재 프로젝트에서는 인증 번호의 TTL이 3분으로 짧고 불일치가 발생했을 때의 영향도 제한적이라는 점을 고려하여 Redis 저장 방식을 유지하고, 이 위험을 설계상의 트레이드오프로 수용하였다. 따라서 이번 구현은 Transactional Outbox Pattern을 완전히 적용한 구조라기보다, 이벤트 영속화와 재발행 아이디어를 프로젝트 상황에 맞게 적용한 구조로 정의하였다.
 
-&nbsp; 해당 포스팅에서는 트랜잭션 아웃박스 패턴을 구현하는 중 '이벤트 저장' 흐름에 대해 알아보았다.
+# 결론
 
-&nbsp; 다음 포스팅에서는 `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)`을 사용하여 커밋이 완료된 후 이벤트를 발행하는 로직을 구현한 경험에 대해 서술해보고자 한다.
+![event-save-process](/assets/img/docs/web/republish-domain-event-1/event-store-process.png)
+
+&nbsp; 이번 포스팅에서는 이벤트 아웃박스 `EventOutbox`의 구조와 아웃박스의 저장 흐름을 작성하였다. 도메인 이벤트 재발행을 위한 구조 중 위 그림의 빨간 표시된 부분이다.
+
+&nbsp; 이벤트 아웃박스 저장 과정에서 중요한 것은 **'모든 도메인 이벤트에 대한 일괄 저장 로직 적용'**과 **'핵심 비즈니스 로직과 이벤트 아웃박스 저장 로직의 원자적 실행'**이다.
+
+&nbsp; Java의 상속과 Spring Event의 `@TransactionalEventListener`를 사용하여 모든 도메인 이벤트를 일괄적으로 저장할 수 있는 이벤트 아웃박스 기록용 리스너를 구현하였다. 따라서, 향후 도메인 이벤트가 더 추가되더라도 별도의 리스너 및 저장 로직 구현이 필요없이 자동으로 이벤트 아웃박스로 변환되어 저장된다.
+
+&nbsp; 그러나, 현재 서비스에 존재하는 도메인 이벤트인 이메일 인증·비밀번호 초기화 이벤트의 핵심 비즈니스 로직인 인증 번호 발급 저장은 Redis에 저장되어 트랜잭션을 통한 롤백 시도가 되지 않는 한계도 확인하였다. 따라서, 이는 Transactional Outbox Pattern의 완벽 적용보다는 '이벤트 아웃박스 영속화' 아이디어를 참고하여 도메인 이벤트 재발행 구조를 도입한 것이라 보는 것이 더 적절하다고 판단하였다.
+
+&nbsp; 완벽한 트랜잭션 아웃박스 패턴으로의 전환을 위해 인증 번호 저장소를 RDB로 이관하거나 보상 트랜잭션 로직을 구현하여 이벤트 아웃박스 기록 실패 시 Redis에 저장된 인증 번호도 롤백하는 방법 등이 존재하지만, 현재 이벤트의 특성과 이벤트 아웃박스 기록 실패 발생율이 낮다는 점을 고려하여 이는 향후 검토 사항으로 남기기로 하였다.
+
+&nbsp; 다음 포스팅에서는 외부 메시지 브로커로 이벤트를 발행하는 과정을 공유햘 것이다. 필자는 MessageRelay(EventPoller)뿐만 아니라 `@TransactionalEventListener`의 `AFTER_COMMIT` 시점을 활용하여 트랜잭션이 완료된 후 바로 이벤트를 발행하는 로직도 구현하였다. 이 2가지 발행 과정은 포스팅을 나누어 서술할 계획이다.
