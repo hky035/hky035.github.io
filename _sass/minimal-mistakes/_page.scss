@@ -55,7 +55,7 @@ body {
     padding-inline-end: $right-sidebar-width;
   }
 
-  overflow-y: auto;
+  @include clearfix;
 
   .page__inner-wrap {
     float: inline-start;
@@ -81,7 +81,7 @@ body {
       position: relative;
       float: inline-start;
       margin-inline: 0;
-      // width: 100%;
+      width: 100%;
       clear: both;
     }
   }

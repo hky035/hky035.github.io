@@ -81,24 +81,24 @@
   @include breakpoint($large) {
     position: absolute;
     top: 0;
+    bottom: 0;
     inset-inline-end: 0;
     width: $right-sidebar-width-narrow;
     margin-inline-end: -1 * $right-sidebar-width-narrow;
     padding-inline-start: 1em;
     z-index: 10;
 
-    &.sticky {
-      @include clearfix();
+    // sticky는 바깥 aside가 아니라 안쪽 .toc에만 적용한다.
+    // aside 자체에 position: sticky + float를 쓰면 절대 배치(top/right 기반 거터 배치)가
+    // 깨지면서 .toc가 본문 컬럼 안으로 다시 끼어들어 본문과 겹치는 문제가 있었다.
+    &.sticky .toc {
       position: -webkit-sticky;
       position: sticky;
       top: 2em;
-      float: inline-end;
 
-      .toc {
-        .toc__menu {
-          overflow-y: auto;
-          max-height: calc(100vh - 7em);
-        }
+      .toc__menu {
+        overflow-y: auto;
+        max-height: calc(100vh - 7em);
       }
     }
   }
