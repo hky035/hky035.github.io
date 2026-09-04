@@ -554,7 +554,10 @@
   }
 }
 
-.toc__menu {
+// .toc .toc__menu로 명시도를 올려 _base.scss의 ".page__content ul"
+// (본문 마크다운 리스트용 padding-inline-start: 15px)가 목차에 새어 들어와
+// 왼쪽에만 15px 여백이 생기던 문제를 막는다.
+.toc .toc__menu {
   margin: 0;
   padding: 0;
   width: 100%;
