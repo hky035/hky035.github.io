@@ -16,12 +16,12 @@ $paragraph-indent: false !default; // true, false (default)
 $indent-var: 1.3em !default;
 
 /* system typefaces */
-$serif: 'Roboto Slab', "Noto Sans KR", Georgia, Times, serif !default;
-$sans-serif: 'Roboto Slab', "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI",
+$serif: 'Pretendard', Georgia, Times, serif !default;
+$sans-serif: 'Pretendard', -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI",
   "Helvetica Neue", "Lucida Grande", Arial, sans-serif !default;
-$monospace: 'Roboto Slab', "Noto Sans KR", Monaco, Consolas, "Lucida Console", monospace !default;
-$description: "Noto Sans KR", "Roboto Slab", -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI";
-$code: 'JetBrains Mono', 'Fira Code', 'Noto Sans KR', 'Roboto Slab', Monaco, Consolas;
+$monospace: 'Pretendard', Monaco, Consolas, "Lucida Console", monospace !default;
+$description: 'Pretendard', -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI";
+$code: 'JetBrains Mono', 'Fira Code', 'Pretendard', Monaco, Consolas;
 
 /* sans serif typefaces */
 $sans-serif-narrow: $sans-serif !default;
