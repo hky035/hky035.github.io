@@ -557,11 +557,19 @@
 // .toc .toc__menu로 명시도를 올려 _base.scss의 ".page__content ul"
 // (본문 마크다운 리스트용 padding-inline-start: 15px)가 목차에 새어 들어와
 // 왼쪽에만 15px 여백이 생기던 문제를 막는다.
-.toc .toc__menu {
+// 하위(중첩) <ul>에도 같은 padding-inline-start: 15px가 새어 들어와서
+// 깊이가 깊어질수록 <a>의 실제 폭(밑줄/클릭 영역)이 계속 좁아지고 있었다.
+.toc .toc__menu,
+.toc .toc__menu ul {
   margin: 0;
   padding: 0;
   width: 100%;
   list-style: none;
+}
+
+// font-size는 em 단위라 중첩된 <ul>마다 반복 적용하면 곱해져서 깊이가
+// 깊어질수록 글자가 계속 작아진다. 최상위 .toc__menu에만 한 번 지정한다.
+.toc .toc__menu {
   font-size: $type-size-6;
 
   @include breakpoint($large) {
@@ -578,6 +586,7 @@
 
     &:hover {
       color: $text-color;
+      background-color: rgba(0, 0, 0, 0.045);
     }
   }
 

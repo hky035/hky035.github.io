@@ -100,7 +100,9 @@
 
       .toc__menu {
         overflow-y: auto;
-        max-height: calc(100vh - 10.5em);
+        /* 화면이 아무리 길어도(맥북 세로로 긴 화면 등) 목차 자체가 지나치게
+           길어지지 않도록 절대값(500px)으로도 상한을 둔다. */
+        max-height: min(calc(100vh - 10.5em), 500px);
       }
     }
   }
