@@ -33,8 +33,10 @@ $(document).ready(function () {
   });
 
   // Smooth scrolling
+  // masthead가 position: fixed로 화면 상단에 고정돼 있어서(약 88px),
+  // 그만큼 오프셋을 안 주면 목차를 클릭해서 이동한 헤딩이 헤더 뒤에 가려진다.
   var scroll = new SmoothScroll('a[href*="#"]', {
-    offset: 20,
+    offset: 88,
     speed: 400,
     speedAsDuration: true,
     durationMax: 500,
@@ -52,7 +54,7 @@ $(document).ready(function () {
       nestedClass: "active", // applied to the parent items
 
       // Offset & reflow
-      offset: 20, // how far from the top of the page to activate a content area
+      offset: 88, // how far from the top of the page to activate a content area
       reflow: true, // if true, listen for reflows
 
       // Event support

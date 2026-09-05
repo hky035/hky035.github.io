@@ -35,7 +35,7 @@
          viewport height - nav height - masthead x-padding
       */
       max-height: calc(100vh - #{$nav-height} - 2em);
-      top: 85.5px;
+      top: 82px;
       position: fixed;
     }
   }
@@ -94,11 +94,13 @@
     &.sticky .toc {
       position: -webkit-sticky;
       position: sticky;
-      top: 2em;
+      /* .masthead가 position: fixed로 화면 상단에 고정돼 있어서
+         그만큼 여유를 안 주면 스크롤 시 목차가 헤더 밑으로 파고든다. */
+      top: 5.5em;
 
       .toc__menu {
         overflow-y: auto;
-        max-height: calc(100vh - 7em);
+        max-height: calc(100vh - 10.5em);
       }
     }
   }
