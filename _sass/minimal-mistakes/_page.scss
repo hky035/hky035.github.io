@@ -567,10 +567,13 @@ body {
   @include breakpoint($large) {
     float: inline-end;
     width: calc(100% - #{$right-sidebar-width-narrow});
+    /* .page__content과 오른쪽 폭을 맞추기 위해 .page와 동일한 여백을 준다 */
+    padding-inline-end: $right-sidebar-width-narrow;
   }
 
   @include breakpoint($x-large) {
     width: calc(100% - #{$right-sidebar-width});
+    padding-inline-end: $right-sidebar-width;
   }
 
   a {
