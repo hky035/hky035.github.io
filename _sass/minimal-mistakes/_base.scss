@@ -33,6 +33,13 @@ h6 {
   font-weight: bold;
 }
 
+/* 헤딩 바로 다음에 문단 없이 또 헤딩이 이어질 때만
+   margin-top을 줄여서 두 헤딩 사이 간격이 과하게 벌어지지 않게 한다.
+   문단 뒤에 헤딩이 오는 일반적인 경우는 원래 2em을 그대로 유지. */
+:is(h1, h2, h3, h4, h5, h6) + :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 1em;
+}
+
 h1 {
   font-size: $h-size-1;
 }
