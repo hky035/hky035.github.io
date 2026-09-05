@@ -2,12 +2,11 @@
    Syntax highlighting
    ========================================================================== */
 
+// padding/background-color/border-radius는 _page.scss의
+// ".page__content :not(pre) > code"가 명시도가 더 높아 항상 이겨서
+// 여기서 줘도 화면에 반영되지 않는 죽은 코드였다. font-family만 남긴다.
 .language-plaintext {
-  background-color: rgba(0,0,0,0.05);
-  padding: 1px 3px;
-  border-radius: 3px;
   font-family: $code;
-  font-size: 14.5px !important;
 }
 
 div.highlighter-rouge,
