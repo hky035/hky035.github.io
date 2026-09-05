@@ -35,3 +35,6 @@
 @import "minimal-mistakes/archive";
 @import "minimal-mistakes/sidebar";
 @import "minimal-mistakes/print";
+
+/* Dark mode (다른 규칙들을 덮어써야 하므로 마지막에 로드) */
+@import "minimal-mistakes/dark-mode";

@@ -1,0 +1,405 @@
+/* ==========================================================================
+   DARK MODE
+
+   이 파일 하나로 다크모드를 켜고 끌 수 있게 만들었다. html[data-theme="dark"]
+   아래에서만 동작하고, 나머지 파일들은 라이트 모드 그대로 유지한다. 마음에 안
+   들면 minimal-mistakes.scss의 @import 한 줄과 이 파일만 지우면 원상복구된다.
+   ========================================================================== */
+
+html[data-theme="dark"] {
+  --dm-bg: #0e0e10;
+  --dm-bg-alt: #18181b;
+  --dm-text: #e7e7ea;
+  --dm-muted: #9a9ca3;
+  --dm-border: #2b2b2f;
+  --dm-accent: #4ade80;
+  --dm-link: #7dd3fc;
+  /* 목차에서 현재 읽고 있는 항목(.active)의 배경 — 카테고리 배지 등에 쓰는
+     --dm-accent(형광 초록)와는 분리된, 옅고 은은한 하이라이트용 색상 */
+  --dm-toc-active-bg: #cdf6dc75;
+
+  background-color: var(--dm-bg);
+  color: var(--dm-text);
+
+  body {
+    background-color: var(--dm-bg);
+    color: var(--dm-text);
+  }
+
+  a {
+    color: var(--dm-link);
+
+    &:visited {
+      color: var(--dm-link);
+    }
+
+    &:hover {
+      color: var(--dm-accent);
+    }
+  }
+
+  /* 헤딩/제목류는 본문 텍스트 색을 그대로 따라가게 */
+  h1, h2, h3, h4, h5, h6,
+  .page__title, .page__title a,
+  .archive__item-title, .archive__item-title a {
+    color: var(--dm-text);
+  }
+
+  hr {
+    border-top-color: var(--dm-border);
+  }
+
+  /* 마스트헤드 / 좌측 사이드바 */
+  .masthead {
+    background: var(--dm-bg);
+    border-bottom-color: var(--dm-border);
+
+    @media (max-width: $large) {
+      border-bottom: none;
+    }
+  }
+
+  .masthead .site-title,
+  .masthead__menu-item a {
+    color: var(--dm-text);
+  }
+
+  .theme-toggle {
+    color: var(--dm-muted);
+
+    &:hover {
+      color: var(--dm-text);
+    }
+  }
+
+  .sidebar {
+    color: var(--dm-text);
+
+    a {
+      color: var(--dm-muted);
+
+      &:hover {
+        color: var(--dm-accent);
+      }
+    }
+  }
+
+  .author__name {
+    color: var(--dm-text);
+  }
+
+  .author__bio {
+    color: var(--dm-muted);
+  }
+
+  /* 목록(archive/home/category) */
+  .list__item {
+    border-bottom-color: var(--dm-border);
+  }
+
+  .archive__subtitle {
+    color: var(--dm-muted);
+    border-bottom-color: var(--dm-border);
+  }
+
+  .page__meta {
+    color: var(--dm-muted);
+  }
+
+  .page__meta-category {
+    color: var(--dm-accent);
+  }
+
+  .page__meta-sep::before {
+    color: var(--dm-muted);
+  }
+
+  .archive__item-excerpt {
+    color: var(--dm-muted);
+  }
+
+  /* 카테고리 상단 category-list 브레드크럼
+     (원본 규칙이 vendor/breakpoint/parsers/_single.scss에 하드코딩된 #888/#3d4144라
+     명시도를 맞춰 여기서 덮어쓴다) */
+  .category-list,
+  .category-list li a {
+    color: var(--dm-muted);
+  }
+
+  .category-list li a:hover,
+  .category-list li:last-child {
+    color: var(--dm-text);
+  }
+
+  /* 본문 */
+  .page__content {
+    a {
+      color: var(--dm-link) !important;
+    }
+
+    h2 {
+      border-bottom-color: var(--dm-border);
+    }
+  }
+
+  .page__meta-title {
+    color: var(--dm-muted);
+  }
+
+  blockquote {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-inline-start-color: var(--dm-accent);
+    color: var(--dm-muted);
+  }
+
+  /* description 박스 (frontmatter description) */
+  .desc-wrapper {
+    border-left-color: var(--dm-border);
+    box-shadow: none;
+  }
+
+  .desc-title {
+    color: var(--dm-muted) !important;
+  }
+
+  .desc-content {
+    color: var(--dm-text) !important;
+  }
+
+  .desc-wrapper hr {
+    border-top-color: var(--dm-border) !important;
+  }
+
+  .underline-highlight {
+    color: #1a1a1a;
+  }
+
+  /* 인라인 코드 */
+  .page__content :not(pre) > code {
+    background-color: var(--dm-bg-alt);
+    color: var(--dm-text);
+  }
+
+  /* 코드블록 */
+  div.highlighter-rouge,
+  figure.highlight {
+    background: var(--dm-bg-alt);
+    color: #abb2bf;
+  }
+
+  body .highlight,
+  body pre.highlight {
+    color: #abb2bf;
+  }
+
+  body .highlight .n,
+  body .highlight .nf,
+  body .highlight .nn,
+  body .highlight .o,
+  body .highlight .p {
+    color: #abb2bf;
+  }
+
+  body .highlight .c,
+  body .highlight .c1,
+  body .highlight .cm,
+  body .highlight .cp,
+  body .highlight .cs {
+    color: #5c6370;
+  }
+
+  body .highlight .sr,
+  body .highlight .ss {
+    color: #56b6c2;
+  }
+
+  body .highlight .k,
+  body .highlight .kc,
+  body .highlight .kd,
+  body .highlight .kn,
+  body .highlight .kp,
+  body .highlight .kr,
+  body .highlight .kt {
+    color: #c678dd;
+  }
+
+  body .highlight .l,
+  body .highlight .ld,
+  body .highlight .s,
+  body .highlight .s1,
+  body .highlight .s2,
+  body .highlight .sb,
+  body .highlight .sc,
+  body .highlight .sd,
+  body .highlight .se,
+  body .highlight .sh,
+  body .highlight .si,
+  body .highlight .sx {
+    color: #98c379;
+  }
+
+  body .highlight .nt,
+  body .highlight .nx,
+  body .highlight .vi {
+    color: #e06c75;
+  }
+
+  body .highlight .il,
+  body .highlight .m,
+  body .highlight .mf,
+  body .highlight .mh,
+  body .highlight .mi,
+  body .highlight .mo,
+  body .highlight .na {
+    color: #d19a66;
+  }
+
+  body .highlight .bp,
+  body .highlight .nb,
+  body .highlight .nc,
+  body .highlight .nd,
+  body .highlight .ne,
+  body .highlight .ni,
+  body .highlight .nl,
+  body .highlight .no,
+  body .highlight .nv,
+  body .highlight .py,
+  body .highlight .vc,
+  body .highlight .vg {
+    color: #e5c07b;
+  }
+
+  body .highlight .gd {
+    color: #e06c75;
+  }
+
+  body .highlight .gi {
+    color: #98c379;
+  }
+
+  body .highlight .hll,
+  body .highlight .hl {
+    background-color: #2c313a;
+    color: #abb2bf;
+  }
+
+  body .highlight .lineno,
+  body .highlight .ln {
+    color: #5c6370;
+  }
+
+  /* 목차(TOC) */
+  .toc {
+    background-color: var(--dm-bg-alt);
+    border-color: var(--dm-border);
+
+    .nav__title {
+      background: var(--dm-border);
+      color: var(--dm-text);
+
+      i {
+        color: var(--dm-accent);
+      }
+    }
+  }
+
+  .toc__menu a {
+    color: var(--dm-muted);
+    border-bottom-color: var(--dm-border);
+
+    &:hover {
+      color: var(--dm-text);
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+  }
+
+  /* 스크롤스파이가 현재 읽고 있는 항목에 붙이는 .active — 라이트 모드용
+     밝은 배경(yiq-contrasted, _navigation.scss)이 그대로 남아 다크모드에서
+     흰 덩어리처럼 보이고 텍스트도 거의 안 보였다. */
+  .toc__menu .active a {
+    background-color: var(--dm-toc-active-bg);
+    color: var(--dm-text);
+  }
+
+  /* 태그/카테고리 목록 (글 하단) */
+  .page__taxonomy-item a {
+    color: var(--dm-muted);
+    border-color: var(--dm-border);
+
+    &:hover {
+      color: var(--dm-text);
+    }
+  }
+
+  /* 페이지네이션 (홈/카테고리 목록 하단 1 2 3 ... 번호) */
+  .pagination li a {
+    color: var(--dm-muted);
+
+    &:hover {
+      color: var(--dm-accent);
+    }
+
+    &.current,
+    &.current.disabled {
+      /* 라이트 모드는 color:#000에 배경(주석 처리됨)이 있다고 가정한 값이라
+         다크 배경에서는 글자가 아예 안 보였다. */
+      color: var(--dm-text);
+      background: var(--dm-bg-alt);
+    }
+
+    &.disabled {
+      color: var(--dm-border);
+    }
+  }
+
+  .pagination--pager {
+    color: var(--dm-text);
+    border-color: var(--dm-border);
+
+    &.disabled {
+      color: var(--dm-border);
+    }
+  }
+
+  /* 테이블 */
+  table {
+    border-color: var(--dm-border);
+
+    tr {
+      background-color: var(--dm-bg);
+      border-top-color: var(--dm-border);
+    }
+
+    th,
+    td {
+      border-color: var(--dm-border);
+    }
+
+    thead {
+      background-color: var(--dm-bg-alt);
+    }
+  }
+
+  /* 푸터 */
+  .page__footer {
+    background-color: var(--dm-bg-alt);
+    border-top: 1px solid var(--dm-border);
+
+    a {
+      color: var(--dm-muted);
+
+      &:hover {
+        color: var(--dm-accent);
+      }
+    }
+  }
+
+  .back-to-top {
+    color: var(--dm-muted);
+  }
+
+  ::selection {
+    background: var(--dm-accent);
+    color: #0e0e10;
+  }
+}

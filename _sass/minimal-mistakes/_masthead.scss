@@ -62,6 +62,39 @@
   max-height: 2rem;
 }
 
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: $muted-text-color;
+  font-size: 1em;
+  cursor: pointer;
+  transition: $global-transition;
+
+  &:hover {
+    color: $text-color;
+  }
+
+  .theme-toggle__icon--sun {
+    display: none;
+  }
+}
+
+html[data-theme="dark"] .theme-toggle {
+  .theme-toggle__icon--moon {
+    display: none;
+  }
+
+  .theme-toggle__icon--sun {
+    display: inline;
+  }
+}
+
 .site-title {
   display: -webkit-box;
   display: -ms-flexbox;

@@ -1,5 +1,16 @@
 <meta charset="utf-8">
 
+<script>
+  // 다크모드 깜빡임(FOUC) 방지: CSS/본문이 그려지기 전에 최대한 빨리 테마를 정한다.
+  (function () {
+    try {
+      var stored = localStorage.getItem('theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {}
+  })();
+</script>
+
 {% include seo.html %}
 
 {% unless site.atom_feed.hide %}
