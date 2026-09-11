@@ -84,11 +84,13 @@ void existsById_테스트() {
 
 &nbsp; 실행 결과는 다음과 같다.
 
-<table style="border: 0.5px solid #d1d1d1; border-radius: 5px;">
+<table>
+  <thead>
   <tr>
-    <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">findById()</td>
-    <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">existsById()</td>
+    <th>findById()</th>
+    <th>existsById()</th>
   </tr>
+  </thead>
   <tr>
     <td style="width: 50%">
       <img src="/assets/img/docs/web/findby-vs-existsby/findbyid.png" href="findbyid-1" style="height: 117.88px;">
@@ -142,11 +144,13 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
 &nbsp; 실행 결과는 다음과 같다.
 
-<table style="border: 0.5px solid #d1d1d1; border-radius: 5px;">
+<table>
+  <thead>
   <tr>
-    <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">findByName()</td>
-    <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">existsByName()</td>
+    <th>findByName()</th>
+    <th>existsByName()</th>
   </tr>
+  </thead>
   <tr>
     <td>
       <img src="/assets/img/docs/web/findby-vs-existsby/findbyname-1.png" href="find-by-name-1">

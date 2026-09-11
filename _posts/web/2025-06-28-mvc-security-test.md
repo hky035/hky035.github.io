@@ -213,21 +213,23 @@ public class TestControllerTest {
 
 <div style="display: flex; justify-content: center;">
     <div style="display: inline-block;">
-        <table style="border: 0.5px solid #d1d1d1; border-radius: 5px;">
+        <table>
+            <thead>
             <tr>
-                <td style="background-color: #FAFAFA; border-right: 0.5px solid #d1d1d1;"></td>
-                <td style="text-align: center; background-color: #FAFAFA;">UserDetails</td>
-                <td style="text-align: center; background-color: #FAFAFA;">CustomUserDetails</td>
+                <th></th>
+                <th>UserDetails</th>
+                <th>CustomUserDetails</th>
+            </tr>
+            </thead>
+            <tr>
+                <th style="text-align: left;">@WebMvcTest 기본 설정만 사용한 경우</th>
+                <td>성공</td>
+                <td>실패</td>
             </tr>
             <tr>
-                <td style="background-color: #FAFAFA; border-right: 0.5px solid #d1d1d1;">@WebMvcTest 기본 설정만 사용한 경우</td>
-                <td style="text-align: center;">성공</td>
-                <td style="text-align: center;">실패</td>
-            </tr>
-            <tr>
-                <td style="background-color: #FAFAFA; border-right: 0.5px solid #d1d1d1;">@EnableWebSecurity 클래스를 Import한 경우</td>
-                <td style="text-align: center;">성공</td>
-                <td style="text-align: center;">성공</td>
+                <th style="text-align: left;">@EnableWebSecurity 클래스를 Import한 경우</th>
+                <td>성공</td>
+                <td>성공</td>
             </tr>
         </table>
     </div>

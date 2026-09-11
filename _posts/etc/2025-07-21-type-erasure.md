@@ -447,20 +447,20 @@ public class C <T> {
 &nbsp; `c`는 제너릭이 정해지지 않은 인스턴스이다. 즉 컴파일 시점에서 타입의 일치 여부를 확인할 수 있는 방법이 없는 상태(unchecked)이다.
 
 
-<table style="border: 0.5px solid #d1d1d1; border-radius: 5px;">
+<table>
     <tr>
-        <td style="border-bottom: 0.5px solid #d1d1d1; border-radius: 5px;">
+        <td>
             <img src="/assets/img/docs/etc/type-erasure/heap-pollution-1.png" alt="heap-pollution-1" />
         </td>
-        <td style="border-bottom: 0.5px solid #d1d1d1; border-radius: 5px;">
+        <td>
             <img src="/assets/img/docs/etc/type-erasure/heap-pollution-2.png" alt="heap-pollution-2" />
         </td>
     </tr>
-    <tr>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02); border-bottom: 0.5px solid #d1d1d1; border-radius: 5px;">
+    <tr class="table-caption-row" style="text-align: center;">
+        <td>
             실행 결과
         </td>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02); border-bottom: 0.5px solid #d1d1d1; border-radius: 5px;">
+        <td>
             fruits 리스트 원소
         </td>
     </tr>

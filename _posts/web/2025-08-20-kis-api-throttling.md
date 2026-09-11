@@ -590,19 +590,19 @@ public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
 
 &nbsp; 위와 같은 과정을 통해 쓰로틀링 + 재시도 로직 + 액세스 토큰 조회 로직 개선 등의 리팩토링을 마친 후 해당 메서드의 성능(호출 시간)을 비교해보았다.
 
-<table style="border: 0.5px solid #d1d1d1; border-radius: 5px;" >
+<table>
     <tbody>
-        <tr style="border: 0.5px solid #d1d1d1;">
-            <td style="border: inherit">
+        <tr>
+            <td>
                 <img src="/assets/img/docs/web/kis-api-throttling/thread-sleep-result.png" alt="thread-sleep-result" />
             </td>
-            <td style="border: inherit">
+            <td>
                 <img src="/assets/img/docs/web/kis-api-throttling/throttling-result.png" alt="throttling-result" />
             </td>
         </tr>
-        <tr style="text-align: center; border: 0.5px solid #d1d1d1; background-color: rgba(0, 0, 0, 0.02);">
-            <td style="border: inherit;">기존 (432초)</td>
-            <td style="border: inherit;">리팩토링 후 (184초)</td>
+        <tr class="table-caption-row" style="text-align: center;">
+            <td>기존 (432초)</td>
+            <td>리팩토링 후 (184초)</td>
         </tr>
     </tbody>
 </table>
@@ -611,14 +611,14 @@ public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
 
 &nbsp; 이 성능 개선의 가장 큰 원인은 **idle하게 낭비되는 시간을 줄이는 것**이다.
 
-<table style="border: 0.5px solid #d1d1d1; border-radius: 5px;" >
+<table>
     <tbody>
-        <tr style="border: 0.5px solid #d1d1d1;">
+        <tr>
             <td>
                 <img src="/assets/img/docs/web/kis-api-throttling/thread-sleep-diagram.png" alt="thread-sleep-digram" />    
             </td>
         </tr>
-        <tr style="text-align: center; border: 0.5px solid #d1d1d1; background-color: rgba(0, 0, 0, 0.02);">
+        <tr class="table-caption-row" style="text-align: center;">
             <td>기존</td>
         </tr>
         <tr>
@@ -626,7 +626,7 @@ public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
                 <img src="/assets/img/docs/web/kis-api-throttling/throttling-diagram.png" alt="throttling-diagram" />
             </td>
         </tr>
-        <tr style="text-align: center; background-color: rgba(0, 0, 0, 0.02);">
+        <tr class="table-caption-row" style="text-align: center;">
             <td>쓰로틀링 적용 후</td>
         </tr>
     </tbody>
@@ -651,19 +651,19 @@ private final RateLimiter rateLimiter = RateLimiter.create(10);
 private final RateLimiter rateLimiter = RateLimiter.create(15);
 ```
 
-<table style="border: 0.5px solid #d1d1d1; border-radius: 5px;" >
+<table>
     <tbody>
-        <tr style="border: 0.5px solid #d1d1d1;">
-            <td style="border: inherit">
+        <tr>
+            <td>
                 <img src="/assets/img/docs/web/kis-api-throttling/throttling-10-result.png" alt="throttling-10-result" />
             </td>
-            <td style="border: inherit">
+            <td>
                 <img src="/assets/img/docs/web/kis-api-throttling/throttling-result.png" alt="throttling-result" />
             </td>
         </tr>
-        <tr style="text-align: center; border: 0.5px solid #d1d1d1; background-color: rgba(0, 0, 0, 0.02);">
-            <td style="border: inherit;">10pps (274초)</td>
-            <td style="border: inherit;">15pps (184초)</td>
+        <tr class="table-caption-row" style="text-align: center;">
+            <td>10pps (274초)</td>
+            <td>15pps (184초)</td>
         </tr>
     </tbody>
 </table>

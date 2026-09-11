@@ -295,10 +295,12 @@ public class IndexComparisonTest {
 ### (1) 삽입 소요 시간
 
 <div style="display:flex; justify-content: center; text-align: center;">
-    <table style="border: 0.5px solid #d1d1d1; border-radius: 5px; font-size: 15px; min-width: 50%;">
+    <table style="font-size: 15px; min-width: 50%;">
     <thead>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">UUID</td>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">ULID</td>
+    <tr>
+        <th>UUID</th>
+        <th>ULID</th>
+    </tr>
     </thead>
     <tr>
         <td>
@@ -344,10 +346,12 @@ mysql> select name, count from INFORMATION_SCHEMA.INNODB_METRICS where name like
 ```
 
 <div style="display:flex; justify-content: center; text-align: center;">
-    <table style="border: 0.5px solid #d1d1d1; border-radius: 5px; font-size: 15px; min-width: 50%;">
+    <table style="font-size: 15px; min-width: 50%;">
     <thead>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">UUID</td>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">ULID</td>
+    <tr>
+        <th>UUID</th>
+        <th>ULID</th>
+    </tr>
     </thead>
     <tr>
         <td>
@@ -473,10 +477,12 @@ mysql> SELECT
 ### (1) 삽입 소요 시간
 
 <div style="display:flex; justify-content: center; text-align: center;">
-    <table style="border: 0.5px solid #d1d1d1; border-radius: 5px; font-size: 15px; min-width: 50%;">
+    <table style="font-size: 15px; min-width: 50%;">
     <thead>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">UUID</td>
-        <td style="text-align: center; background-color: rgba(0, 0, 0, 0.02)">ULID</td>
+    <tr>
+        <th>UUID</th>
+        <th>ULID</th>
+    </tr>
     </thead>
     <tr>
         <td>

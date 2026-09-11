@@ -390,12 +390,14 @@ export default function () {
 &nbsp; 위 수치외에도 50, 90, 130, 160, 200 TPS를 기준으로 테스트를 진행하였다.
 
 <div style='display:flex; justify-content: center; text-align: center;'>
-    <table style='border: 0.5px solid #d1d1d1; border-radius: 5px; font-size: 15px; min-width: 50%;'>
+    <table style='font-size: 15px; min-width: 50%;'>
         <thead>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>TPS</td>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>avg(ms)</td>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>p95(ms)</td>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>비고</td>
+        <tr>
+            <th>TPS</th>
+            <th>avg(ms)</th>
+            <th>p95(ms)</th>
+            <th>비고</th>
+        </tr>
         </thead>
         <tr>
             <td>50</td>
@@ -580,12 +582,14 @@ export default function() {
 &nbsp; 위 테스트에서 `BATCH_SIZE` 값을 환경 변수로 전달하여, `BATCH_SIZE`를 늘려가면서 응답 시간을 비교한다.
 
 <div style='display:flex; justify-content: center; text-align: center;'>
-    <table style='border: 0.5px solid #d1d1d1; border-radius: 5px; font-size: 15px; min-width: 50%;'>
+    <table style='font-size: 15px; min-width: 50%;'>
         <thead>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>배치 사이즈</td>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>avg(ms)</td>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>p95(ms)</td>
-            <td style='text-align: center; background-color: rgba(0, 0, 0, 0.02)'>비고</td>
+        <tr>
+            <th>배치 사이즈</th>
+            <th>avg(ms)</th>
+            <th>p95(ms)</th>
+            <th>비고</th>
+        </tr>
         </thead>
         <tr>
             <td>10</td>
