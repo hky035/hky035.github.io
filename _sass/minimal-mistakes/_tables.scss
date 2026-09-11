@@ -3,15 +3,16 @@
    ========================================================================== */
 
 table {
-  // display: block;
   display: table;
-  margin-bottom: 1em;
-  // width: 100%;
+  margin: 1.5em auto;
   width: auto;
   font-family: $global-font-family;
   font-size: $type-size-6;
-  border-collapse: collapse;
-  overflow-x: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  overflow: hidden;
 
   & + table {
     margin-top: 1em;
@@ -19,23 +20,37 @@ table {
 }
 
 thead {
-  background-color: $border-color;
-  border-bottom: 2px solid mix(#000, $border-color, 25%);
+  background-color: mix(#000, $background-color, 4%);
 }
 
 th {
-  padding: 0.5em;
+  padding: 0.5em 1em;
   font-weight: bold;
-  text-align: start;
+  text-align: center;
+  border-bottom: 1px solid $border-color;
 }
 
 td {
-  padding: 0.5em;
-  border-bottom: 1px solid mix(#000, $border-color, 25%);
+  padding: 0.5em 1em;
+}
+
+tr:not(:last-child) td,
+tbody tr:not(:last-child) th {
+  border-bottom: 1px solid $border-color;
 }
 
 tr,
 td,
 th {
   vertical-align: middle;
+}
+
+/* 표 안에서 좌우 컬럼을 구분해야 할 때 사용하는 세로 구분선 */
+.td-divider {
+  border-right: 1px solid $border-color;
+}
+
+/* thead가 아닌 자리(캡션, 라벨 행 등)에서 헤더와 같은 톤을 내고 싶을 때 사용 */
+.table-caption-row {
+  background-color: mix(#000, $background-color, 4%);
 }

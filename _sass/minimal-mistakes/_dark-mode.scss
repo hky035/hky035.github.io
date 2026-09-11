@@ -360,20 +360,17 @@ html[data-theme="dark"] {
   /* 테이블 */
   table {
     border-color: var(--dm-border);
+    background-color: var(--dm-bg);
+  }
 
-    tr {
-      background-color: var(--dm-bg);
-      border-top-color: var(--dm-border);
-    }
+  th,
+  td {
+    border-color: var(--dm-border);
+  }
 
-    th,
-    td {
-      border-color: var(--dm-border);
-    }
-
-    thead {
-      background-color: var(--dm-bg-alt);
-    }
+  thead,
+  .table-caption-row {
+    background-color: var(--dm-bg-alt);
   }
 
   /* 푸터 */
