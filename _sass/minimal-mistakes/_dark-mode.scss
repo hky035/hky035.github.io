@@ -170,10 +170,6 @@ html[data-theme="dark"] {
     border-top-color: var(--dm-border) !important;
   }
 
-  .underline-highlight {
-    color: #1a1a1a;
-  }
-
   /* 인라인 코드 */
   .page__content :not(pre) > code {
     background-color: var(--dm-bg-alt);
