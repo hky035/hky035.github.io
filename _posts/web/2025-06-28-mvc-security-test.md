@@ -470,7 +470,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 
 <img src="/assets/img/docs/web/mvc-security-test/proxinghmar.png" alt="proxinghmar" />
 
-&nbsp; <span class="underline-highlight"><span class="code">CustomUserDetails</span>를 사용할 경우 <span class="code">AuthenticationPrincipalArgumentResolver</span>가 아닌 <span class="code">ProxingHandlerMethodArgumentResolver</span>를 리졸버로 사용</span>한다. 따라서, `AuthenticationPrincipalArgumentResolver`를 사용하지 않았기 때문에 `CustomUserDetails` 값이 제대로 바인딩 되지 않았던 것이다.
+&nbsp; `CustomUserDetails`를 사용할 경우 `AuthenticationPrincipalArgumentResolver`가 아닌 `ProxingHandlerMethodArgumentResolver`를 리졸버로 사용한다. 따라서, `AuthenticationPrincipalArgumentResolver`를 사용하지 않았기 때문에 `CustomUserDetails` 값이 제대로 바인딩 되지 않았던 것이다.
 
 ### 5. ProxingHandlerMethodArgumentResolver
 
@@ -535,7 +535,7 @@ public class ProxyingHandlerMethodArgumentResolver extends ModelAttributeMethodP
 
 &nbsp; 즉, <u><span class="language-plaintext">@EnableWebSecurity</span> 클래스의 Import 여부에 따라 ArgumentResolver가 등록되는 순서가 달라진다</u>.
 
-&nbsp; 해당 문제는 <span class="underline-highlight" style="font-weight: bold;">SecurityAutoConfiguration</span> 차이에 의해 발생한다.
+&nbsp; 해당 문제는 `SecurityAutoConfiguration` 차이에 의해 발생한다.
 
 &nbsp; SpringSecurity 사용 시 사용자가 직접 `@EnableWebSecurity` 클래스를 정의하지 않을 경우, `SecurityAutoConfiguration`에 의해 자동으로 FilterChain과 기타 설정을 등록하게 된다.
 

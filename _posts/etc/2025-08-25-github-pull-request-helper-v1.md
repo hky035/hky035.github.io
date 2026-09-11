@@ -22,7 +22,7 @@ show_date: true
 
 &nbsp; 물론 보조 모니터 등의 장치가 있다면, 여러 개의 윈도우를 활용해 양쪽에서 확인이 가능하기 때문에 크게 문제가 없다고 느낄 수 있다. 그러나, 학교나 외부를 다니면서 주로 노트북을 사용하기 때문에 하나의 모니터만을 사용하여 PR Description과 File Changed를 번갈아가며 확인하는 경우가 많다.
 
-&nbsp; 이러한 불편함에서 "계속해서 탭을 전환해가면서 확인을 해야하나?", "계속해서 PR Description과 File Changed 페이지를 번갈아가며 api 요청을 해야하나?" 라는 생각 끝에 <span class="underline-highlight">"변경사항 탭에서 PR Description을 확인할 수 있다면 어떨까?"</span>라는 질문에 도달하게 되었다. 지속되는 API 호출도 줄일 뿐더러, 별다른 설명이 없는 변경사항 페이지에서 PR Description을 확인할 수 있도록 하여 탭을 번갈아가며 확인하는 사용자의 수고로움을 덜어낼 수도 있다는 긍정적인 효과가 기대되었다.
+&nbsp; 이러한 불편함에서 "계속해서 탭을 전환해가면서 확인을 해야하나?", "계속해서 PR Description과 File Changed 페이지를 번갈아가며 api 요청을 해야하나?" 라는 생각 끝에 <i>"변경사항 탭에서 PR Description을 확인할 수 있다면 어떨까?"</i>라는 질문에 도달하게 되었다. 지속되는 API 호출도 줄일 뿐더러, 별다른 설명이 없는 변경사항 페이지에서 PR Description을 확인할 수 있도록 하여 탭을 번갈아가며 확인하는 사용자의 수고로움을 덜어낼 수도 있다는 긍정적인 효과가 기대되었다.
 
 &nbsp; 따라서, **Github Pull Request Helper**라는 크롬 확장 프로그램을 만들어보기로 하였다. 우선은 이 프로젝트의 시작에 있었던 질문이자 제안인 '변경사항 탭에서 PR Description 확인하기 기능'이라는 최소한의 기능만을 갖춘 채 출시해보기로 하였다. 
 
@@ -79,7 +79,7 @@ https://github.com/hky035/Github-Pull-Request-Helper/pull/1/files
 https://github.com/*/*/pull/*/files
 ```
 
-&nbsp; Pull Request의 변경사항(File Changed) 탭의 주소는 위와 같다. 따라서, 해당 확장 프로그램이 동작하기 위해 <span class="code">content_script</span>의 <span class="code">matches</span> 부분에 변경사항 탭의 주소 패턴 매칭을 위한 와일드카드 처리 주소를 표기하였다. 해당 경로는 <span class="underline-highlight">SPA의 특성 상 Github의 페이지가 새로고침이 되지 않는 문제로 인하여 변경</span>하였다. 이는 아래에서 추가적으로 서술할 것이다.
+&nbsp; Pull Request의 변경사항(File Changed) 탭의 주소는 위와 같다. 따라서, 해당 확장 프로그램이 동작하기 위해 <span class="code">content_script</span>의 <span class="code">matches</span> 부분에 변경사항 탭의 주소 패턴 매칭을 위한 와일드카드 처리 주소를 표기하였다. 해당 경로는 SPA의 특성 상 Github의 페이지가 새로고침이 되지 않는 문제로 인하여 변경하였다. 이는 아래에서 추가적으로 서술할 것이다.
 
 ## content.js
 

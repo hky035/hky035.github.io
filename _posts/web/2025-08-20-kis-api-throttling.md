@@ -640,7 +640,7 @@ public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
 
 ## 허용량에 따른 처리 속도 비교
 
-&nbsp; 여기서, <span style="font-style: italic;" class="underline-highlight">"<span class="code">RateLimiter</span>의 허용량을 더욱 낮추면 슬라이딩 윈도우더라도 호출 유량 초과 에러가 발생할 확률이 줄어들기 때문에 성능이 더욱 개선될까?"</span>라는 의문이 들었다. 
+&nbsp; 여기서, "`RateLimiter`의 허용량을 더욱 낮추면 슬라이딩 윈도우더라도 호출 유량 초과 에러가 발생할 확률이 줄어들기 때문에 성능이 더욱 개선될까?"라는 의문이 들었다. 
 
 &nbsp; 따라서, `RateLimiter`의 허용량을 각각 10, 15로 설정해 테스트를 진행해보았다.
 

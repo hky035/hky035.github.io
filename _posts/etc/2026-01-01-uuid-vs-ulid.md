@@ -64,8 +64,8 @@ show_date: true
 &nbsp; 인덱스는 데이터를 빠르게 찾기 위해 (키, 값) 쌍으로 구성된 B+ Tree 자료구조이다. 
 
 &nbsp; MySQL에서는 **주 인덱스**와 **보조 인덱스**가 존재한다.   
-&nbsp; <span class="underline-highlight" style="font-weight: bold">주 인덱스</span>는 <u>클러스터링 인덱스</u>로 키를 PK, 값을 레코드 전체로 가지는 인덱스이다. 즉, 테이블에 데이터 삽입 시 PK를 통해 값이 삽입된다.   
-&nbsp; <span class="underline-highlight" style="font-weight: bold">보조 인덱스</span>는 <u>논-클러스터링 인덱스</u>로 키를 특정 컬럼, 값을 PK로 가지는 인덱스이다. 즉, PK를 제외하고 다른 컬럼들을 통해 사용자가 직접 지정하여 생성된 인덱스를 의미한다.
+&nbsp; **주 인덱스**는 <u>클러스터링 인덱스</u>로 키를 PK, 값을 레코드 전체로 가지는 인덱스이다. 즉, 테이블에 데이터 삽입 시 PK를 통해 값이 삽입된다.   
+&nbsp; **보조 인덱스**는 <u>논-클러스터링 인덱스</u>로 키를 특정 컬럼, 값을 PK로 가지는 인덱스이다. 즉, PK를 제외하고 다른 컬럼들을 통해 사용자가 직접 지정하여 생성된 인덱스를 의미한다.
 
 &nbsp; 인덱스는 B+ Tree의 키를 기준으로 정렬이 되어있으며, 리프노드들은 페이지이다. 주 인덱스는 각 페이지마다 레코드들이 저장되어있고, 보조 인덱스는 (키, PK) 쌍이 저장되어 있다.
 
@@ -93,7 +93,7 @@ show_date: true
 
 &nbsp; [MySQL 공식 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-physical-structure.html)에 따르면 InnoDB의 인덱스는 추가 레코드가 삽입 되었을 때, 페이지 내 1/16 정도의 공간은 남겨둔다고 한다. 
 
-&nbsp; 따라서 결과적으로 생성되는 인덱스 페이지는 <span class="underline-highlight"><span style="font-weight: bold;">순차 삽입</span>의 경우에는 대부분 15/16 만큼 채워져있으며, <span style="font-weight: bold;">랜덤 삽입</span>의 경우에는 1/2(=50%)에서 15/16까지 채워져있다</span>고 한다. 여기서 순차 삽입과 랜덤 삽입 시 결과 인덱스 페이지가 채워진 비율이 다르다는 점이 <u>두 방식의 페이지 분할(Page Split) 기법도 다르다는 것</u>을 나타낸다.
+&nbsp; 따라서 결과적으로 생성되는 인덱스 페이지는 **순차 삽입의 경우에는 대부분 15/16 만큼 채워져있으며, 랜덤 삽입의 경우에는 1/2(=50%)에서 15/16까지 채워져있다**고 한다. 여기서 순차 삽입과 랜덤 삽입 시 결과 인덱스 페이지가 채워진 비율이 다르다는 점이 <u>두 방식의 페이지 분할(Page Split) 기법도 다르다는 것</u>을 나타낸다.
 
 &nbsp; 페이지 분할 방식의 차이는 데이터베이스 오픈소스 소프트웨어 프로젝트 개발 회사인 Percona의 기술 블로그 포스트 ["The Impacts of Fragmentation in MySQL"](https://www.percona.com/blog/the-impacts-of-fragmentation-in-mysql/)에서 확인할 수 있었다.
 
@@ -799,7 +799,7 @@ mysql> EXPLAIN SELECT sub_id FROM heavy_ulid_sec WHERE sub_id LIKE '01J%';
 
 &nbsp; 레코드의 크기가 큰 실제 운영 상황에서는 하나의 레코드의 크기가 크기때문에 주 인덱스(클러스터링 인덱스)에서 페이지 당 레코드 갯수가 매우 적다. 
 
-&nbsp; 보조 인덱스의 경우에는 논-클러스터링 인덱스로 페이지 당 보유 레코드 수가 주 인덱스 대비 많다. 또한, 페이지의 갯수도 적다. 따라서, <span style="font-weight: bold;" class="underline-highlight">레코드 조회 시 주 인덱스보다 보조 인덱스를 사용하는 것이 더욱 효율적인 성능을 발휘한</span>다는 것을 알 수 있다.
+&nbsp; 보조 인덱스의 경우에는 논-클러스터링 인덱스로 페이지 당 보유 레코드 수가 주 인덱스 대비 많다. 또한, 페이지의 갯수도 적다. 따라서, **레코드 조회 시 주 인덱스보다 보조 인덱스를 사용하는 것이 더욱 효율적인 성능을 발휘한**다는 것을 알 수 있다.
 
 &nbsp; 실제 운영 상황에는 레코드의 크기와 갯수, 보조 인덱스가 차지하는 비율 등을 잘 고려하여 적절한 방법을 선택해야 한다는 생각이 든다.
 
