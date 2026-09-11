@@ -33,6 +33,26 @@ figure.highlight {
   }
 }
 
+/* 코드 블록 상단 헤더 (언어명 + Copy 버튼) */
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5em 1em;
+  border-top-left-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.03);
+  font-family: $sans-serif;
+  font-size: $type-size-5;
+}
+
+.code-block-lang {
+  color: $muted-text-color;
+  text-transform: none;
+  user-select: none;
+}
+
 .highlight table {
   margin-bottom: 0;
   font-size: 1em;
@@ -446,61 +466,23 @@ body .highlight .language-json .kc {
 
 /* custom style - code copy button */
 
-// .copy-code-button {
-//   display: inline-flex;
-//   align-items: center;
-//   justify-content: center;
-//   padding: 0.5em;
-//   font-size: 1em; /* 아이콘 크기 조절 */
-//   transition: color 0.3s ease, transform 0.3s ease; /* 색상과 크기 변화에 대한 트랜지션 추가 */
-// }
-
-// .copy-code-button i {
-//   transition: transform 0.3s ease; /* 아이콘 크기 변화에 대한 트랜지션 추가 */
-// }
-
-// .copy-code-button:hover {
-//   background: rgba(255, 255, 255, 0.1); /* 마우스 호버 시 배경색 추가 */
-// }
-
-// .copy-code-button .fa-check {
-//   transform: scale(1.2); /* 체크 아이콘 크기 증가 */
-// }
-
 .copy-code-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5em;
-  font-size: 1em; /* 아이콘 크기 조절 */
-  transition: color 0.3s ease; /* 색상 변화에 대한 트랜지션 추가 */
-  z-index: 1; /* 버튼이 다른 요소 위에 나타나도록 설정 */
-}
+  appearance: none;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: $muted-text-color;
+  font-family: $sans-serif;
+  font-size: 1em;
+  cursor: pointer;
 
-.copy-code-button i {
-  transition: transform 0.3s ease; /* 아이콘 크기 변화에 대한 트랜지션 추가 */
-}
-
-.copy-code-button:hover {
-  background: rgba(0, 0, 0, 0.1); /* 마우스 호버 시 배경색 추가 */
-}
-
-.copy-code-button .fa-check {
-  transform: scale(1.2); /* 체크 아이콘 크기 증가 */
-}
-
-/* 애니메이션 클래스 */
-.animate {
-  animation: drop 0.3s forwards; /* 애니메이션 효과 적용 */
-}
-
-@keyframes drop {
-  0% {
-      transform: translateY(-10px); /* 위로 이동 */
-      opacity: 0; /* 투명도 0 */
-  }
-  100% {
-      transform: translateY(0); /* 원래 위치로 */
-      opacity: 1; /* 완전히 나타남 */
+  &:hover,
+  &:focus,
+  &:active {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: $muted-text-color;
   }
 }

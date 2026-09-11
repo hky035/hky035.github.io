@@ -184,6 +184,26 @@ html[data-theme="dark"] {
     color: #abb2bf;
   }
 
+  .code-block-header {
+    border-bottom-color: var(--dm-border);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .code-block-lang {
+    color: var(--dm-muted);
+  }
+
+  .copy-code-button {
+    color: var(--dm-muted);
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: var(--dm-muted);
+      background: transparent;
+    }
+  }
+
   body .highlight,
   body pre.highlight {
     color: #abb2bf;
