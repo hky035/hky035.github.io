@@ -124,6 +124,37 @@ $(document).ready(function () {
     midClick: true, // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
   });
 
+  // Enable click-to-zoom lightbox for plain <img> tags in post content
+  // (i.e. images not already wrapped in a link, which are handled above)
+  $(".page__content img")
+    .not("a > img")
+    .addClass("lightbox-image")
+    .on("click", function () {
+      $.magnificPopup.open(
+        {
+          items: {
+            src: this.src,
+            type: "image",
+          },
+          image: {
+            tError: '<a href="%url%">Image #%curr%</a> could not be loaded.',
+          },
+          removalDelay: 500,
+          mainClass: "mfp-zoom-in",
+          callbacks: {
+            beforeOpen: function () {
+              this.st.image.markup = this.st.image.markup.replace(
+                "mfp-figure",
+                "mfp-figure mfp-with-anim"
+              );
+            },
+          },
+          closeOnContentClick: true,
+        },
+        0
+      );
+    });
+
   // Add anchors for headings
   (function () {
     var pageContentElement = document.querySelector(".page__content");

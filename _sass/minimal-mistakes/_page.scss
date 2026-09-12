@@ -176,6 +176,10 @@ body {
     }
   }
 
+  img.lightbox-image {
+    cursor: zoom-in;
+  }
+
   :not(pre) > code {
     /* inline code block padding change */
     // padding-top: 0.1rem;
