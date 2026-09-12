@@ -121,6 +121,9 @@ body {
 }
 
 .page__content {
+  word-break: normal;
+  overflow-wrap: break-word;
+
   h1,
   h2 {
     padding-bottom: 0.5em;
