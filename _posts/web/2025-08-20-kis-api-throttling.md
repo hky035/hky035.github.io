@@ -10,7 +10,9 @@ published: true
 show_date: true
 ---
 
-# 서론 - Problem
+# \# 서론
+
+## 문제 상황 - 주식 분봉 데이터 수집 소요 시간
 
 &nbsp; 최근 주식 투자 웹 서비스 프로젝트 '무주시'를 리팩토링하며 예전에 작성하였던 코드들을 다시 되돌아보고 있다. 당시 작성했던 코드들을 보고 "왜 이렇게 작성하였지"라는 한탄을 하기도 하지만, 또한 그만큼 문제를 해결하는 능력이 늘어났다는 긍적적인 생각으로 리팩토링을 진행하고 있다. 
 
@@ -123,7 +125,7 @@ public class KisStockChartUpdater {
 
 &nbsp; 또한, 쓰로틀링과 유사한 <span style="font-weight: bold;">비율 제한(Rate Limit)</span>이라는 개념이 있다. 거의 유사한 개념으로 세부적인 설명에 대한 차이는 존재하지만 혼용해서 사용하는 듯하다.
 
-## 기타 문제점 Additional Issue
+## 기타 문제점
 
 &nbsp; 해당 포스팅은 쓰로틀링을 통한 외부 API 호출 시 idle한 시간 해결에 중점이 맞추어져 있지만, 해당 로직에서 몇 가지 다른 문제점도 발견하였다.
 
@@ -261,14 +263,9 @@ public class ExternalApiExceptionAspectForDev {
 
 &nbsp; 기존 로직에서는 15번의 호출 기준으로 Thread를 1초씩 Sleep하였으므로 호출 유량 제한 등의 에러 응답이 발생하지 않아서 해당 부분을 간과하고 넘어간 것 같다. 그러나, 이후 쓰로틀링을 적용하면서 API 호출 유량 제한에 의한 에러가 발생하기 시작하였고 이에 대한 적절한 처리가 필요하였다. 본론에서 재시도 로직을 도입하여 해당 과정을 해결한 내용을 서술할 것이다.
 
-# 본론 - Solution
+# \# 본론
 
-## 관련 PR
-<i class="fas fa-link"></i> [Feature: 한국투자증권 주식 분봉 데이터 API 호출 기능 쓰로틀링 적용
-](https://github.com/Team-Digimon/muzusi-was/pull/119)
-
-
-
+<i class="fas fa-link"></i> **Related Pull Requestj** - [Feature: 한국투자증권 주식 분봉 데이터 API 호출 기능 쓰로틀링 적용](https://github.com/Team-Digimon/muzusi-was/pull/119)
 
 ## 실행 환경
 - Processor: Macbook Air M1
@@ -586,7 +583,7 @@ public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
 
 &nbsp; 왜냐하면 Redis는 명령어 처리를 단일 쓰레드로 수행하기 때문에 한 번에 접근 요청이 몰릴 경우, 요청의 처리가 밀리는 현상이 발생할 수 있기 때문이다. 기존 상황에서 2,742번의 한국투자증권 액세스 토큰 조회 요청이 있었기에 동일한 시간에 Redis를 사용하는 리프레시 토큰, 주식 랭킹 관련 요청이 있을 경우 병목으로 이어질 수 있었기에 접근 횟수를 줄이는 것도 큰 성능 개선이라 생각한다.
 
-# 테스트
+## 테스트
 
 &nbsp; 위와 같은 과정을 통해 쓰로틀링 + 재시도 로직 + 액세스 토큰 조회 로직 개선 등의 리팩토링을 마친 후 해당 메서드의 성능(호출 시간)을 비교해보았다.
 
@@ -638,7 +635,7 @@ public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
 
 &nbsp; 기존에는 호출 유량 에러가 발생하지 않았음에도 무조건 15번의 요청마다 1초 씩 대기를 하게되어서 API 요청에 준하는 만큼의 대기 시간 오버헤드가 발생하였던 것이다.
 
-## 허용량에 따른 처리 속도 비교
+### 허용량에 따른 처리 속도 비교
 
 &nbsp; 여기서, "`RateLimiter`의 허용량을 더욱 낮추면 슬라이딩 윈도우더라도 호출 유량 초과 에러가 발생할 확률이 줄어들기 때문에 성능이 더욱 개선될까?"라는 의문이 들었다. 
 
@@ -674,7 +671,7 @@ private final RateLimiter rateLimiter = RateLimiter.create(15);
 
 &nbsp; 따라서, 이러한 적절한 trade-off 관계에 맞는 허용량을 설정하는 것이 중요하고, 허용량을 높여 호출 유량 초과 에러가 응답된 경우 재시도 로직을 통하여 이를 보완하는 대비책도 필요하다.
 
-# 결론
+# \# 결론
 
 &nbsp; 코드 리팩토링을 하며 주로 아키텍처 관점에서의 SRP, 결합도, 응집도 등의 문제를 해결하며 유지보수 측면에서의 개선을 하였다.
 

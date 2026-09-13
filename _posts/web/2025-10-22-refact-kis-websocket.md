@@ -10,7 +10,7 @@ published: true
 show_date: true
 ---
 
-# 서론
+# \# 서론
 
 &nbsp; 최근 모의 주식 투자 서비스 '무주시(무자본 주식 시뮬레이션)'를 되돌아보며 과거의 부족함을 느끼고, 구조 및 기능적으로 개선할 부분을 리팩토링하고 있다. 해당 리팩토링의 가장 큰 목표는 **'한국투자증권 웹소켓 호출(구독 수) 유량 제한 정책 극복'**에 있다. 한국투자증권에서는 기본적으로 API나 웹소켓에 대하여 [호출 유량 제한 정책](https://apiportal.koreainvestment.com/community/10000000-0000-0011-0000-000000000001/post/d0d1a83f-6f8d-4437-9700-6d26702fd989)을 시행하고 있다. 웹소켓의 경우에는 하나의 세션 당 41개의 종목까지 구독이 가능하다. 또한, 하나의 세션은 하나의 개발자센터 계좌만 사용하기 때문에 실시간 체결가와 같은 정보를 제공하는데에는 어려움이 있다. 
 
@@ -240,12 +240,11 @@ public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
 
 &nbsp; `CompletableFuture<T>` 클래스에서는 `get(long timeout, TimeUnit unit)` 메서드를 사용해 시간 내에 값을 받아오는 방법도 존재하고, `join()` 메서드를 통해 비동기 작업이 완료된 후 값을 받아오는 방법이 존재한다. 필자는 웹소켓 세션 연결이 필수적으로 되어야지만 실시간 체결가 제공이 가능하기 때문에 `.join()` 메서드를 사용하여 웹소켓 세션을 받아오기로 하였다.
 
-# 본론
+# \# 본론
 
-## 관련 PR
-<i class="fas fa-link"></i> [Refact: 한국투자증권 웹소켓 연결 세션 증설 및 구독 관리 로직 리팩토링](https://github.com/Team-Digimon/muzusi-was/pull/122)
+<i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> **Related Pull Request** - [Refact: 한국투자증권 웹소켓 연결 세션 증설 및 구독 관리 로직 리팩토링](https://github.com/Team-Digimon/muzusi-was/pull/122)
 
----
+<div style="height: 10px;"></div>
 
 &nbsp; 서론에서 이야기하였던 구조를 바탕으로 아래와 같은 기능(책임)을 담당하는 클래스들을 정의하였다.
 
@@ -1013,7 +1012,7 @@ public class KisRealTimeTradeWebSocketClient {
 
 &nbsp; `KisRealTimeTradeWebSocketClient`는 한국투자증권 웹소켓 서버로 구독/해제 요청을 보내는 클래스이다. 실제 요청을 보내는 세부 로직은 `request()` 메서드를 두어 내부에서 처리한다. 외부에는 `subscribe()`, `unsubscribe()` 메서드만 노출하여 추상화된 인터페이스를 제공한다.
 
-## 7.StompInterceptor
+## 7. StompInterceptor
 
 ```java
 @Slf4j
@@ -1161,12 +1160,9 @@ public void initialize(List<String> sessionIds) {
 
 &nbsp; `KisWebSocketSessionManager.initializeSessions()`를 호출하여 한국투자증권과 웹소켓 세션을 연결하고, 연결된 웹소켓 세션의 ID를 반환한다. 또한, 해당 세션 ID를 통해 `KisSubscriptionManager.initialize(List<String>)`를 호출하여 해당 세션들의 '세션 당 구독 종목' 변수들을 초기화한다.
 
-# 테스트
+## 테스트
 
 &nbsp; 테스트는 `KisSubscriptionManager`에 대한 단위 테스트와 구독/해제 로직에 대한 통합 테스트를 진행하였다. 통합 테스트는 k6를 통한 동시 사용자 수를 설정하여 실제 환경을 고려하여 테스트를 진행하였다.
-
-
-## KisSubscriptionManagerTest
 
 ```java
 @ExtendWith(MockitoExtension.class)
@@ -1344,7 +1340,7 @@ public class KisSubscriptionMangerTest {
 
 &nbsp; <code>KisSubscriptionManagerTest</code>에서는 주식 종목을 처음 구독하는 시나리오와 41개 이상의 종목을 구독하는 시나리오에 대한 단위 테스트를 진행한다.
 
-## k6 통합 테스트
+### k6 통합 테스트
 
 ```js
 import { check } from 'k6';
@@ -1462,7 +1458,7 @@ content-length:121
 
 &nbsp; 위 2가지 테스트를 통해 실제 운용 환경에서 웹소켓 로직이 제대로 동작함을 확인할 수 있었다. 따라서, 구독 가능 종목의 갯수는 41개 → 82개로 늘어나게 되었다.
 
-# 결론
+# \# 결론
 
 &nbsp; 해당 작업은 시작부터 많은 시간이 걸린 작업이었다.
 

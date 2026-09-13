@@ -10,7 +10,7 @@ published: true
 show_date: true
 ---
 
-# 서론
+# \# 서론
 
 &nbsp; 최근 개인 프로젝트나 협업을 진행하며 Github Pull Request를 확인하는 것이 일상이 되었다. 
 
@@ -26,7 +26,7 @@ show_date: true
 
 &nbsp; 따라서, **Github Pull Request Helper**라는 크롬 확장 프로그램을 만들어보기로 하였다. 우선은 이 프로젝트의 시작에 있었던 질문이자 제안인 '변경사항 탭에서 PR Description 확인하기 기능'이라는 최소한의 기능만을 갖춘 채 출시해보기로 하였다. 
 
-# 본론
+# \# 본론
 
 &nbsp; 크롬 확장프로그램을 만들기 위해서는 크게 3가지의 구성요소가 필요하다.
 
@@ -310,7 +310,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 &nbsp; content.js가 실행되게 되면 MutationObserver에 의해 하위 요소의 변화를 감지하게 된다. 변화가 있을 때마다 당시 사용자의 경로를 확인해 Pull Request 변경 사항 페이지(`/files`)일 경우 PR Description 삽입 함수를 실행하게 된다.
 
-# 결론
+# \# 결론
 
 &nbsp; Github를 사용할 때 느낀 불편함에서부터 **Github Pull Requeset Helper** 크롬 확장 프로그램을 만들어보기로 결심하였다. 내가 불편하였던 부분을 해결하기 위해 직접 확장 프로그램을 만들어서 해결한 경험은 큰 성취감을 가지게 해주었다. 또한, 이 확장 프로그램이 [크롬 웹 스토어](https://chromewebstore.google.com/detail/github-pull-request-helpe/pllamjfnmnjelajmmklnldmpembdbcgi?hl=ko&utm_source=ext_sidebar)에 정식으로 올라가게 되었다는 것에 큰 기쁨을 느꼈다.
 

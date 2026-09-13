@@ -10,7 +10,9 @@ published: true
 show_date: true
 ---
 
-# 서론 - 객체 동등성이 보장되지 못하여 테스트가 실패한 경험
+# \# 서론 
+
+## 객체 동등성이 보장되지 못하여 테스트가 실패한 경험
 
 &nbsp; 최근 '소프트웨어 설계' 전공 과목에서 진행한 카풀 프로젝트를 리팩토링하며 도메인 주도 설계(DDD, Domain-Driven Design)의 헥사고날 아키텍처를 적용하였다. 따라서, 특정 도메인을 표현하기 위해 도메인 엔티티(Domain Entity)와 VO(Value Object) 객체를 정의하는 것을 중요하게 생각하게 되었다.
 
@@ -90,9 +92,11 @@ void success() {
 
 &nbsp; 이러한 2가지 관점을 기반으로 **"도메인 주도 설계에서 동등성 보장이 왜 중요한가?"**는 질문의 답을 찾아나갈 수 있었다.
 
-# 도메인 엔티티와 VO의 비교
+# \# 본론
 
-## 도메인 엔티티(Entity)
+## 도메인 엔티티와 VO의 비교
+
+### 도메인 엔티티(Entity)
 
 &nbsp; 도메인 엔티티는 고유한 식별자(id, identifier)를 가지며, 특정 도메인에서 해결해야하는 대상을 표현한 객체이다.
 
@@ -108,7 +112,7 @@ User(id = 1, nickname = "test02")
 
 &nbsp; 즉, <u>엔티티는 식별자(id)를 통해서 객체를 식별</u>한다. 
 
-## VO(Value Object)
+### VO(Value Object)
 
 &nbsp; VO(Value Object)는 도메인 엔티티에서 사용되는 개별 요소의 의미를 감싸는 객체를 의미한다.
 
@@ -124,7 +128,7 @@ new Email("kim@gmail.com");
 
 &nbsp; 즉, <u>VO는 객체의 주소(고유식별자, identity)가 아니라 내부 값(value)을 기준으로 비교</u>되어야 한다.
 
-# 동일성(identity)과 동등성(equality)
+## 동일성(identity)과 동등성(equality)
 
 &nbsp; 객체를 비교할 때 **동일성(identity)**와 **동등성(equality)**이란 개념이 사용된다.
 
@@ -132,7 +136,7 @@ new Email("kim@gmail.com");
 
 &nbsp; **동등성(equality)**이란 두 객체가 동일한 정보를 가지고 있다는 것을 의미하며, 두 변수가 저장된 주소가 다르더라도 가지는 값이 같으면 같은 객체를 의미하는 경우를 일컫는다. 
 
-# VO에서 동등성이 보장되어야 하는 이유
+### VO에서 동등성이 보장되어야 하는 이유
 
 &nbsp; 동등성의 의미에서 VO에서 동등성이 보장되어야하는 이유를 알 수 있다.
 
@@ -140,7 +144,7 @@ new Email("kim@gmail.com");
 
 &nbsp; 해당 개념은 **동등성**을 의미하며, VO에서 동등성이 보장되어야 하는 이유이다.
 
-# 동등성이 필요한 곳
+### 동등성이 필요한 곳
 
 &nbsp; 객체의 동등성이 보장되어야지만 동작에 이상이 없는 것들은 다음과 같다.
 
@@ -184,9 +188,9 @@ void success() throws Exception {
 
 &nbsp; 이 외에도 `HashSet`과 같은 Collection 사용 시에도 동등성이 보장되어야 한다. 정확하게는 클래스에 `hashCode()`와 `equals()` 메서드를 구현해야한다.
 
-# equals()와 hashCode()
+## equals()와 hashCode()
 
-## equals()
+### equals()
 
 &nbsp; Java에서는 객체의 동등성(equality)를 비교하기 위해서는 `Object` 클래스에서 제공하는 `equals(Object o)` 메서드를 오버라이딩 해야한다.
 
@@ -196,7 +200,7 @@ void success() throws Exception {
 
 &nbsp; 따라서, VO에서는 값 기반 비교가 가능하도록 `equals()` 메서드를 오버라이딩하여 값을 비교하도록 구현해야한다.
 
-## hashCode()
+### hashCode()
 
 &nbsp; `hashCode`는 `equals()`와 동시에 자주 언급되는 메서드이다. 또한, `equals()`를 구현할 경우 무조건 `hashCode()`도 구현해야한다고 언급된다.
 
@@ -208,7 +212,7 @@ void success() throws Exception {
 
 &nbsp; 따라서, `equals()`를 구현하여 두 객체의 동등성을 보장하였더라도 `hashCode()`를 구현하지 않는다면 해당 객체를 Hash Collection에 저장할 때 중복 저장되는 등 예기치 못한 동작으로 이어질 위험성이 존재하기 때문에 `equals()`와 `hashCode()`를 동시에 구현하여야 한다.
 
-# 마무리
+# \# 마무리
 
 &nbsp; 헥사고날 아키텍처를 기반으로 도메인 주도 설계를 심도있게 공부하고 있다. 애그리거트, 바운디드 컨텍스트와 같이 실제 비즈니스 규모에서 사용되는 거시적인 개념들을 이해하고 사용하는 것에는 한계가 있어 우선은 도메인의 개념과 의미를 중점으로 구조를 고민하고 있다.
 

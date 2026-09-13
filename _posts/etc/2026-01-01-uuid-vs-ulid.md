@@ -10,7 +10,7 @@ published: true
 show_date: true
 ---
 
-# 서론
+# \# 서론
 
 &nbsp; 최근 '여행 기록 관리 플랫폼' 프로젝트를 진행하며 이메일 발송 보장을 위하여 **Transactional Outbox Pattern**을 적용하기로 하였다. 이를 위하여 이벤트를 발송하는 일부 로직에 Spring Event 기반 구조를 도입하게 되었다.
 
@@ -30,6 +30,8 @@ show_date: true
 
 &nbsp; 이번 포스팅에서 중점적으로 다룰 주제는 Non-Sequential PK로 사용되는 값인 UUID와 ULID의 차이와 레코드 삽입, 조회 시 발생하는 성능 비교이다.
 
+# \# 본론
+
 &nbsp; 프로젝트에서는 '비밀번호 초기화 요청'과 '이메일 인증 코드 요청' 기능 수행 후 이벤트를 발행하여 메일 발송이 이루어지도록 설계하였다. 
 
 &nbsp; 이는 지속적으로 발생하는 이벤트가 아닌 일회성 이벤트이기 때문에, 아웃박스에 저장되는 데이터의 양이 매우 많을 것이라고 보기는 어렵다. 다만 향후 MSA 및 EDA 전환 가능성을 고려하여, 대규모 프로젝트 환경을 가정하고 이벤트 및 아웃박스 구조를 고민하였다.
@@ -37,12 +39,12 @@ show_date: true
 &nbsp; `eventId` 컬럼의 식별자로 처음에 고려한 것은 UUID였다.   
 &nbsp; 그러나 UUID를 키로 사용할 경우 성능상 문제가 발생할 수 있다는 내용을 이전에 접한 기억이 있어, 이벤트가 대량으로 발행/저장되는 환경에서는 적절하지 않을 수 있다고 판단하였다. 이에 따라 UUID를 식별자로 사용할 때 발생할 수 있는 문제점에 대해 보다 자세히 조사하였다.
 
-# 키의 특성이 데이터베이스 성능에 영향을 미칠 수 있는 요소
+## 키의 특성이 데이터베이스 성능에 영향을 미칠 수 있는 요소
 
 &nbsp; 우선, UUID나 ULID 등에 대해 알아보기 전에 키의 특성이 데이터베이스 성능에 영향을 미칠 수 있는 요소가 무엇이 있는지 정리해보고자 한다.
 
-- <span style="font-family: 'Noto Sans KR';">키의 크기 (Size of Key)</span>
-- <span style="font-family: 'Noto Sans KR';">키의 순차성 (Sequentiality of Key)</span>
+- 키의 크기 (Size of Key)
+- 키의 순차성 (Sequentiality of Key)
 
 &nbsp; 이번 테스트를 통해 위 2가지의 요소가 향후 UUID와 ULID의 성능 차이를 일으킨다는 것을 알게되었다. 
 
@@ -53,13 +55,13 @@ show_date: true
 3. 페이지에 행(row)가 거의 다 찰 경우 페이지 분할(Page Split)을 통하여 추가적인 페이지를 확보한다.
 4. RandomID를 사용할 경우 Cache Miss가 발생할 확률이 높다.
 
-## 1. 키도 곧 특정 레코드의 데이터이다.
+### 1. 키도 곧 특정 레코드의 데이터이다.
 
 &nbsp; 말 그대로, 키도 곧 데이터이다. 
 
 &nbsp; 키의 길이가 길수록 한 행(row)의 크기가 커지기 때문에 페이지 내 들어갈 수 있는 데이터(row)의 갯수가 줄어든다.
 
-## 2. 인덱스는 B+ Tree 구조를 가지며, 레코드 삽입 시 재배치가 이루어진다.
+### 2. 인덱스는 B+ Tree 구조를 가지며, 레코드 삽입 시 재배치가 이루어진다.
 
 &nbsp; 인덱스는 데이터를 빠르게 찾기 위해 (키, 값) 쌍으로 구성된 B+ Tree 자료구조이다. 
 
@@ -85,7 +87,7 @@ show_date: true
 
 &nbsp; 그러나, 페이지가 꽉찬 상태에서 레코드가 삽입된 경우에는 페이지 분할이 필요하다.
 
-## 3. 페이지에 행(row)가 거의 다 찰 경우 페이지 분할(Page Split)을 통하여 추가적인 페이지를 확보한다.
+### 3. 페이지에 행(row)가 거의 다 찰 경우 페이지 분할(Page Split)을 통하여 추가적인 페이지를 확보한다.
 
 &nbsp; 해당 특징이 레코드 삽입 시 UUID와 ULID의 성능 차이를 불러일으키는 결정적 요인이다.
 
@@ -109,7 +111,7 @@ show_date: true
 
 &nbsp; 페이지 분할(Page Split) 자체도 되게 비용이 큰 무거운 연산이며, 레코드의 크기가 클 수록 페이지는 더욱 빨리 채워질 것이기에 페이지 분할도 많이 발생할 것이다.
 
-## 4. RandomID를 사용할 경우 Cache Miss가 발생할 확률이 높다.
+### 4. RandomID를 사용할 경우 Cache Miss가 발생할 확률이 높다.
 
 &nbsp; MySQL은 레코드 조회 시 해당 레코드만 메모리로 로드하는 것이 아니라, 해당 레코드가 포함된 페이지를 읽어와 **InnoDB Buffer Pool**에 적재한다.
 
@@ -119,11 +121,11 @@ show_date: true
 
 &nbsp; 키의 순차성뿐만이 아니라 키의 크기가 클수록 Cache Miss의 발생 확률이 증가한다. 키도 레코드의 데이터 중 하나이기 때문에 키의 크기가 클수록 레코드의 크기도 증가하게 된다. 레코드의 크기가 증가하면 페이지 내 적재될 수 있는 레코드의 수는 줄어들게 된다. 따라서, Cache Miss 발생 확률이 증가하게 되는 것이다.
 
-# UUID vs ULID
+## UUID vs ULID
 
 &nbsp; 키의 크기와 키의 순차성에 따라 데이터베이스 성능에 영향을 미치게 된다. 그렇다면 UUID와 ULID는 어떠한 차이가 있는지 알아보자.
 
-## UUID
+### UUID
 
 &nbsp; [UUID(Universally Unique Identifier)]((https://datatracker.ietf.org/doc/html/rfc4122))는 128-bit의 고유 식별자이다. 중앙 시스템에서 ID를 발급하는 형식이 아니기에 빠르고 간단하게 ID를 생성할 수 있는 방법이다. 필자가 애플리케이션 레벨에서 이벤트를 구분하기 위한 `eventId` 값을 만들기 위해 가장 먼저 생각난 방법이 UUID이다.
 
@@ -148,7 +150,7 @@ show_date: true
 
 &nbsp; Java에서 기본적으로 제공하는 UUID의 경우에는 완전 무작위값이므로 충돌 가능성이 매우 낮지만, 이를 키로 사용할 경우에 앞서 보았던 데이터베이스 성능 문제가 발생할 수 있다. 따라서, 데이터베이스의 키 값으로 UUID 사용을 고려한다면 UUID v4 보다는 타임스탬프(시간) 값을 기반으로 하는 다른 버전의 UUID를 사용하는 것이 도움이 될 것이다.
 
-## ULID
+### ULID
 
 &nbsp; [ULID(Universally Unique Lexicographically Sortable Identifier)](https://github.com/ulid/spec)는 이름 그대로 사전적으로 정렬 가능한 범용 고유 식별자를 의미한다. 여기서, 사전적으로 정렬 가능하다라는 뜻은 ASCII 코드를 기준으로 문자의 크기를 비교하여 정렬하는 것을 나타낸다.
 
@@ -195,7 +197,7 @@ show_date: true
 
 &nbsp; 그러나, 학부생 수준에서 진행하는 프로젝트에서는 대규모 데이터가 생성되고 저장되는 일이 잘 없기 때문에, 구체적인 수치를 눈으로 확인하고 비교하기 위해 Spring과 MySQL을 통한 실험을 진행하였다.
 
-# UUID vs ULID 성능 비교 테스트
+## UUID vs ULID 성능 비교 테스트
 
 &nbsp; 해당 테스트는 식별자로 사용하는 값에 따른 인덱스 재배치 및 페이지 분할 발생 빈도수 차이 등을 확인하는 것을 목적으로 하고 있기에 <u>레코드 삽입</u>에 중점이 맞추어져있다.
 
@@ -290,9 +292,9 @@ public class IndexComparisonTest {
 
 &nbsp; 우선, 삽입할 레코드의 크기를 100,000개로 설정한 뒤 삽입 테스트를 진행하였다.
 
-## 100,000개 레코드 삽입
+### 100,000개 레코드 삽입
 
-### (1) 삽입 소요 시간
+#### (1) 삽입 소요 시간
 
 <div style="display:flex; justify-content: center; text-align: center;">
     <table style="font-size: 15px; min-width: 50%;">
@@ -315,7 +317,7 @@ public class IndexComparisonTest {
 
 &nbsp; 삽입 소요 시간에서는 근소한 차이를 보이지만 UUID가 조금 더 오래걸리는 것을 알 수 있다. 페이지 분할이나 인덱스 재배치 등으로 인해 발생하는 오버헤드로 인한 차이일 것이다. 이는 데이터의 수가 많을수록 더욱 극명하게 나타날 것이다.
 
-### (2) 페이지 분할 횟수
+#### (2) 페이지 분할 횟수
 
 ```
 # uuid_table에 레코드 삽입 후
@@ -368,7 +370,7 @@ mysql> select name, count from INFORMATION_SCHEMA.INNODB_METRICS where name like
 
 &nbsp; UUID가 ULID보다 페이지 분할 횟수가 많은 이유는 키의 길이가 더 길고, 랜덤(비순차) 삽입이 이루어지기 때문에 기존 페이지와 새로 생성되는 페이지에 1/2씩 레코드를 나눠가지게 분할이 되기 때문임을 알 수 있다.
 
-### (3) 인덱스로 인해 할당된 페이지 수
+#### (3) 인덱스로 인해 할당된 페이지 수
 
 ```
 mysql> SELECT
@@ -393,7 +395,7 @@ mysql> SELECT
 
 &nbsp; 100,000개의 레코드 삽입 시 생성된 페이지 수는 약 1.9배 차이라는 것을 알 수 있다. 이또한, 레코드가 더욱 많아질수록 차이가 클 것이다.
 
-### (4) 테이블 크기
+#### (4) 테이블 크기
 
 ```
 mysql> SELECT TABLE_NAME, DATA_LENGTH AS 'Pure_Data_Size_Bytes', ROUND(DATA_LENGTH / 1024 / 1024, 2) AS 'Pure_Data_Size_MiB'
@@ -412,7 +414,7 @@ WHERE TABLE_NAME LIKE '%uuid_table%' OR TABLE_NAME LIKE '%ulid_table%';
 
 &nbsp; 이또한 약 2배 정도의 차이를 보이고 있다. 
 
-### (5) 페이지 당 평균 레코드 수 및 Fill Factor
+#### (5) 페이지 당 평균 레코드 수 및 Fill Factor
 
 ```
 mysql> SELECT 
@@ -444,7 +446,7 @@ GROUP BY TABLE_NAME;
 
 &nbsp; 페이지 당 평균 레코드 수가 낮으므로 UUID 사용 시 Cache Miss 확률이 더 높을 것이다.
 
-### (6) I/O Write Request
+#### (6) I/O Write Request
 
 ```
 mysql> SELECT
@@ -470,11 +472,11 @@ mysql> SELECT
 
 &nbsp; UUID의 경우 앞서 말한 페이지 분할의 특성으로 인하여 기존 페이지 수정 + 새로 생긴 페이지 기록 + 인덱스 트리 구조 수정 등 I/O 작업이 다수 발생하며, 더욱 빈번하게 발생하므로 이러한 차이가 발생한다는 것을 알 수 있다.
 
-## 300,000개 레코드 삽입
+### 300,000개 레코드 삽입
 
 &nbsp; 테스트 코드에서 `RECORD_SIZE = 300_000`으로 수정하여 300,000개 레코드 삽입 시에 발생하는 성능 차이를 확인하였다. 이때, 기존 테이블은 삭제 후 새로 생성하여 테스트를 진행하였다.
 
-### (1) 삽입 소요 시간
+#### (1) 삽입 소요 시간
 
 <div style="display:flex; justify-content: center; text-align: center;">
     <table style="font-size: 15px; min-width: 50%;">
@@ -497,7 +499,7 @@ mysql> SELECT
 
 &nbsp; 100,000개의 레코드 삽입 시에는 약 2초 정도의 차이가 있었지만, 300,000개의 레코드 삽입 시에는 UUID가 ULID보다 약 22초 이상 더 소요된 것을 확인할 수 있다.
 
-### (2) 페이지 분할 횟수
+#### (2) 페이지 분할 횟수
 
 ```
 mysql> SELECT name, count FROM INFORMATION_SCHEMA.INNODB_METRICS WHERE name = 'index_page_splits';
@@ -517,7 +519,7 @@ mysql> SELECT name, count FROM INFORMATION_SCHEMA.INNODB_METRICS WHERE name = 'i
 
 &nbsp; 100,000개의 레코드 삽입 시에는 페이지 분할 횟수 차이가 223인 반면, 300,000개 레코드 삽입 시에는 819회 차이가 나는 것을 확인할 수 있다. 이는 약 1.8배 정도의 차이이다.
 
-### (3) 인덱스로 인해 할당된 페이지 수
+#### (3) 인덱스로 인해 할당된 페이지 수
 
 ```
 mysql> SELECT
@@ -540,7 +542,7 @@ AND stat_name = 'size';
 
 &nbsp; 할당된 페이지 수 또한 UUID가 ULID보다 901개의 페이지가 더 많이 생성된 것을 확인할 수 있다.
 
-### (4) 테이블 크기 
+#### (4) 테이블 크기 
 
 ```
 mysql> SELECT TABLE_NAME, DATA_LENGTH AS 'Pure_Data_Size_Bytes', ROUND(DATA_LENGTH / 1024 / 1024, 2) AS 'Pure_Data_Size_MiB' FROM information_schema.TABLES  WHERE TABLE_NAME LIKE '%uuid_table%' OR TABLE_NAME LIKE '%ulid_table%';
@@ -555,7 +557,7 @@ mysql> SELECT TABLE_NAME, DATA_LENGTH AS 'Pure_Data_Size_Bytes', ROUND(DATA_LENG
 
 &nbsp; 테이블 크기의 경우에도 약 2배 정도의 차이를 보이고 있으며 단순 텍스트 데이터만 가진 레코드이더라도 극명한 차이를 보이고 있다는 것을 알 수 있다.
 
-### (5) 페이지 당 평균 레코드 수 및 Fill Factor
+#### (5) 페이지 당 평균 레코드 수 및 Fill Factor
 
 ```
 mysql> SELECT 
@@ -581,7 +583,7 @@ WHERE TABLE_NAME LIKE '%uuid_table%' OR TABLE_NAME LIKE '%ulid_table%'
 
 &nbsp; 따라서, 삽입되는 레코드의 수가 증가하더라도 이러한 양상은 유지된다는 것을 알 수 있다.
 
-### (6) I/O Write Request
+#### (6) I/O Write Request
 
 ```
 SELECT
@@ -619,7 +621,7 @@ WHERE table_name LIKE '%uuid_table%' OR table_name LIKE '%ulid_table%';
 - ULID는 키의 크기가 상대적으로 작고, 순차적인 식별자이다.
 - 레코드의 양이 많을수록 데이터베이스 성능 차이가 극명하게 발생한다.
 
-# PK가 아닌 보조 인덱스로 사용할 경우
+## PK가 아닌 보조 인덱스로 사용할 경우
 
 &nbsp; 앞서 서론 부분에 이벤트 아웃박스의 `eventId` 컬럼을 PK가 아닌 일반 컬럼으로 두고, 보조 인덱스로 사용한다고 하였다.
 
@@ -799,7 +801,7 @@ mysql> EXPLAIN SELECT sub_id FROM heavy_ulid_sec WHERE sub_id LIKE '01J%';
 
 &nbsp; 이는 당연하게도 조회 시 사용하는 인덱스가 보조 인덱스와 주 인덱스로 나뉘기 때문에 발생하는 차이이다. 
 
----
+# \# 결론
 
 &nbsp; 위 결과를 바탕으로 ULID를 PK로 사용하는 경우 vs ULID를 보조 인덱스로 사용하는 경우를 비교한다면 다음과 같다.
 

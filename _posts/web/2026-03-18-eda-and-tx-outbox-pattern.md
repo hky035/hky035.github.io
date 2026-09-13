@@ -10,7 +10,7 @@ published: true
 show_date: true
 ---
 
-# 서론 
+# \# 서론 
 
 &nbsp; 여행 기록 관리 플랫폼 '여기가' 프로젝트를 진행하며 이메일 인증·비밀번호 초기화 이메일 전송 기능 개발을 담당하게 되었다. 이메일 전송은 외부 메일 서버를 거쳐 실행되는 작업으로 Network I/O 등 시간이 오래 걸리는 작업이다. 따라서, 핵심 비즈니스 로직과 이메일 발송 로직을 분리하여 결합도를 낮추고, 향후 메일 서버 분리의 확장성을 염두해 이메일 발송 로직을 이벤트 기반 아키텍처(EDA)로 분리하였다. 
 
@@ -20,9 +20,9 @@ show_date: true
 
 &nbsp; 이 문제에 대한 해결 방법을 찾던 중 **'Transactional Outbox Pattern'**을 알게 되었다. 해당 포스팅에서는 Transactional Outbox Pattern에 관한 개념과 EDA에서 Transactional Outbox Pattern의 연관성을 서술하고자 한다.
 
-# 본론
+# \# 본론
 
-# # Event Driven Architecture에서 Transactional Outbox Pattern이 사용되는 이유
+## Event Driven Architecture에서 Transactional Outbox Pattern이 사용되는 이유
 
 &nbsp; 이전 프로젝트에서는 이벤트 기반 구조를 적용한 경험이 없었기에, 이메일 발송 부가 로직을 이벤트로 분리하는 작업을 진행하지 얼마 지나지 않은 상태에서 이벤트 기반 구조와 트랜잭션 아웃박스 패턴의 개념의 연관성에 대한 의문이 들었다.
 
@@ -30,7 +30,7 @@ show_date: true
 
 &nbsp; 이벤트 기반 구조에서는 다양한 이점이 존재하지만, **"메시지 전송 전 유실 문제"**라는 심각한 문제도 존재한다. 또한, 타 서비스에서 **"이벤트 재발행"**을 요구하는 경우도 존재한다.
 
-## ## 메시지 유실 문제
+## 메시지 유실 문제
 
 ![message-loss](/assets/img/docs/web/tx-outbox-1/message-loss.png)
 
@@ -47,7 +47,7 @@ show_date: true
 &nbsp; 이 문제를 해결하는 방법이 **트랜잭션 아웃박스 패턴(Transactional Outbox Pattern)**이다.
 
 
-# # Transactional Outbox Pattern
+## Transactional Outbox Pattern
 
 &nbsp; 이벤트 기반 아키텍처에서 외부 메시지 브로커를 사용하여 이벤트를 서버 외부로 발행하는 경우 이벤트(메시지)가 유실될 수 있다는 문제점을 인식하였다. 이를 해결하기 위한 방법이 **트랜잭션 아웃박스 패턴(Transactional Outbox Pattern)**이다.
 
@@ -144,7 +144,7 @@ show_date: true
 
 &nbsp; 이에 관한 자세한 내용은 차후 포스팅에서 다룰 예정이다.
 
-# # 결론
+# \# 결론
 
 &nbsp; EDA는 이벤트를 통해서 다른 모듈·서비스로 이벤트를 전달하기에 한 도메인에서 핵심 비즈니스 로직과 부가 로직의 결합도를 낮추고, 높은 확장성을 제공한다. '여기가' 서비스처럼 메일 전송과 같은 특정 작업 전용 서버의 분리 가능성을 고려한다면 EDA를 도입하는 것도 좋다고 생각한다. 또한, MSA 환경에서는 다른 서비스로 CUD 이벤트를 전파하여 데이터 정합성을 유지하기도 한다.
 
