@@ -28,7 +28,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 2em 0 0.5em;
+  margin: 2em 0 1em;
   /* masthead가 position: fixed로 화면 상단에 고정돼 있어서, URL 해시(#)나
      목차 클릭으로 헤딩으로 스크롤 이동하면 헤더에 가려 잘려 보였다.
      scroll-margin-top으로 그만큼 여유를 두고 멈추게 한다. */
