@@ -388,8 +388,8 @@ blockquote {
 }
 
 /* for reference */
-.page__content a {
-  color: #3d4144 !important;
+.page__content a:not(.header-link) {
+  color: #467886 !important;
   text-decoration-color: rgb(47.2,124.8,148.8);
   text-underline-offset: 3px;
   font-weight: normal;
