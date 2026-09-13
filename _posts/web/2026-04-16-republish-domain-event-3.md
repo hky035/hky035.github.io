@@ -10,9 +10,16 @@ published: true
 show_date: true
 ---
 
-# 서론
+# \# Related Post
 
-&nbsp; [이전 포스팅(도메인 이벤트 재발행 구조 도입기 2 - 커밋 직후 발행과 RabbitMQ Publish Confirm)](/web/tx-outbox-3/)에서는 트랜잭션 커밋 이후 즉시 이벤트를 외부 메시지 브로커로 발행하는 로직에 대해 설명하였다.
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [Event Driven Architecture와 Transactional Outbox Pattern의 연관성](/web/eda-and-tx-outbox-pattern/)
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [도메인 이벤트 재발행 구조 도입기 1 - EventOutbox의 저장](/web/republish-domain-event-1/)   
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [도메인 이벤트 재발행 구조 도입기 2 - 커직 직후 발행과 RabbitMQ Publish Confirm](/web/republish-domain-event-2/)   
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> **도메인 이벤트 재발행 구조 도입기 3 - 이벤트 아웃박스 폴링을 통한 이벤트 발행**
+
+# \# 서론
+
+&nbsp; [이전 포스팅(도메인 이벤트 재발행 구조 도입기 2 - 커밋 직후 발행과 RabbitMQ Publish Confirm)](/web/republish-domain-event-2/)에서는 트랜잭션 커밋 이후 즉시 이벤트를 외부 메시지 브로커로 발행하는 로직에 대해 설명하였다.
 
 &nbsp; 그러나 이는 '여기가' 서비스에 유효 시간이 존재하는 이메일 인증·비밀번호 초기화 이벤트에 대한 빠른 처리를 위한 구조이며, 해당 발행도 트랜잭션 커밋 이후 한 번이 실행이 될 뿐이다. 즉, 해당 발행에서도 메시지 발행이 실패할 수 있다는 것이다.
 
@@ -20,9 +27,9 @@ show_date: true
 
 &nbsp; 이는 Chris Richardson의 [Microservice Architecture - Pattern: Transactional outbox](https://microservices.io/patterns/data/transactional-outbox.html)에서 소개하는 Message Relay 개념과 동일히다.
 
-# 본론
+# \# 본론
 
-# \# 이벤트 폴링은 왜 필요한가?
+## 이벤트 폴링은 왜 필요한가?
 
 &nbsp; 이벤트를 주기적으로 폴링해야하는 이유는 실패·미발행 이벤트가 존재하기 때문이다. 
 
@@ -33,7 +40,7 @@ show_date: true
 &nbsp; 따라서, 실패(`FAILED`), 미발행(`WAITING`) 이벤트를 발행하기 위해 주기적으로 폴링이 필요한 것이다.
 
 
-# \# 이벤트를 조회하는 대안
+## 이벤트를 조회하는 대안
 
 &nbsp; 이벤트를 조회하는 방법으로 폴링 방식만 존재하는 것은 아니다.
 
@@ -41,13 +48,13 @@ show_date: true
 
 &nbsp; 그러나, 이것은 복잡한 구현 방식을 가지기 때문에 필자는 애플리케이션에서 실패·미발행 이벤트 아웃박스를 조회하여 발행하는 폴링 방식을 선택하여 구현하였다.
 
-# \# 이벤트의 상태
+## 이벤트의 상태
 
 &nbsp; 이전 포스팅들에서도 이벤트의 상태를 언급하였듯이 이벤트 아웃박스는 `WAITING` / `PUBLISHED` / `FAILED` 상태를 가진다.
 
 &nbsp; `PUBLISHED` 상태를 제외한 미발행, 실패 상태의 이벤트를 주기적으로 조회하여 발행해야 하는 것이다.
 
-## \## 미발행 이벤트의 조회
+## 미발행 이벤트의 조회
 
 &nbsp; 미발행 이벤트는 `BEFORE_COMMIT` 커밋에서 이벤트 아웃박스가 기록될 때 정해지는 초기값이다. 즉, `BEFORE_COMMIT`과 `AFTER_COMMIT` 사이의 이벤트일 수도 있다.
 
@@ -59,7 +66,7 @@ show_date: true
 
 &nbsp; 또한, 유효 기간이 존재하는 도메인 이벤트이기에 유효 기간이 지난 이벤트는 더 이상 조회 대상에서 제외한다.
 
-## \# 실패 이벤트의 조회
+## 실패 이벤트의 조회
 
 &nbsp; 발행 실패 이벤트는 `AFTER_COMMIT` 시점 또는 이벤트 폴링을 통한 발행에 실패한 상태이다. 따라서, 폴링을 통해 주기적으로 재발행을 시도해야한다.
 
@@ -69,7 +76,7 @@ show_date: true
 
 &nbsp; 여기가와 달리 MSA에서 CUD 작업의 결과로 변경 사항을 다른 서비스로 알리기 위해 발행하는 이벤트는 단순히 재시도를 멈추기만 하면 데이터 정합성이 어긋나는 문제가 발생한다. 따라서, 재발행은 멈추더라도 타 서비스에서 해당 서비스로 요청을 보내 데이터를 동기화 시키는 작업도 주기적으로 실시한다는 내용을 확인할 수 있었다.
 
-# \# EventPoller 구현
+## EventPoller 구현
 
 ```java
 @Slf4j
@@ -280,7 +287,7 @@ public class RabbitMQConfig {
 
 &nbsp; 또한, 이 경우에도 발행 후 Publish Confirm 여부에 따라 이벤트 상태를 갱신해야하므로 조회한 모든 이벤트의 발행 성공 여부를 비동기적을 수신받으면 결과에 따라 이벤트 아웃박스의 상태를 갱신한다.
 
-# 결론
+# \# 결론
 
 &nbsp; 도메인 이벤트가 발생한 서비스에서는 이벤트 발행의 책임을 가진다. 이벤트를 아웃박스로 영속화하는 것을 넘어 실제로 발행하는 것까지가 책임이다. 
 

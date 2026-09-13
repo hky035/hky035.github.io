@@ -10,9 +10,16 @@ published: true
 show_date: true
 ---
 
-# 서론
+# \# Related Post
 
-&nbsp; [이전 포스팅(도메인 이벤트 재발행 구조 도입기 1 - Event Outbox의 저장)](/web/tx-outbox-2/)에서 이메일 인증·비밀번호 초기화 기능에서 인증 번호를 저장하며 해당 이벤트를 `EventOutbox`로 변환하고 저장하는 과정에 대해 알아보았다.
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [Event Driven Architecture와 Transactional Outbox Pattern의 연관성](/web/eda-and-tx-outbox-pattern/)
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [도메인 이벤트 재발행 구조 도입기 1 - EventOutbox의 저장](/web/republish-domain-event-1/)   
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> **도메인 이벤트 재발행 구조 도입기 2 - 커직 직후 발행과 RabbitMQ Publish Confirm**
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [도메인 이벤트 재발행 구조 도입기 3 - 이벤트 아웃박스 폴링을 통한 이벤트 발행](/web/republish-domain-event-3/)  
+
+# \# 서론
+
+&nbsp; [이전 포스팅(도메인 이벤트 재발행 구조 도입기 1 - Event Outbox의 저장)](/web/republish-domain-event-1/)에서 이메일 인증·비밀번호 초기화 기능에서 인증 번호를 저장하며 해당 이벤트를 `EventOutbox`로 변환하고 저장하는 과정에 대해 알아보았다.
 
 &nbsp; 도메인 이벤트를 아웃박스로 바꾸어 저장(영속화)하는 이유는 <u>외부 메시지 브로커로 발행이 실패하더라도 언제든지 재발행을 수행</u>할 수 있게 하기 위함이다.
 
@@ -25,9 +32,9 @@ show_date: true
 
 &nbsp; 이번 포스팅에서는 <u>이벤트 생성 즉시(트랜잭션 커밋 완료 시점) 이벤트를 발행</u>하는 과정을 도입하게 되며 겪은 경험에 대해 작성해보고자 한다.
 
-# 본론
+# \# 본론
 
-# \# 트랜잭션 커밋 후 즉시 이벤트 발행
+# 트랜잭션 커밋 후 즉시 이벤트 발행
 
 &nbsp; 트랜잭션 아웃박스 패턴은 MessageRelay를 통한 이벤트 발행을 기본으로 설명한다. 그러나, '여기가' 프로젝트에서는 트랜잭션 커밋 후(`AFTER_COMMIT`) 즉시 이벤트를 외부 메시지 브로커로 발행한다.
 
@@ -41,7 +48,7 @@ show_date: true
 
 &nbsp; 또한, 이메일 인증·비밀번호 초기화 이벤트는 유효 시간이 존재하는 이벤트이다. 따라서, 빠른 이메일 발송이 필요한 부가 로직이라 생각하여 트랜잭션 커밋 이후 즉시 이벤트를 발행하기로 하였다.
 
-# \# 발행의 책임
+# 발행의 책임
 
 &nbsp; 이메일 인증, 비밀번호 초기화 기능에 EDA를 적용하여 도메인 이벤트를 발행함으로써 각 로직이 실행되는 서비스에서는 '발행의 책임'이 생긴다.
 
@@ -69,7 +76,7 @@ correlationData.getFuture().thenApply(confirm -> {
 }).exceptionally(ex -> /*예외 처리*/);
 ```
 
-# \# 트랜잭션 커밋 후 즉시 이벤트 발행 로직의 구현
+# 트랜잭션 커밋 후 즉시 이벤트 발행 로직의 구현
 
 &nbsp; 트랜잭션 커밋 이후 이벤트 아웃박스가 기록되고, `@TrnasactionalEventListener`를 통해서 도메인 이벤트 객체를 처리할 수 있다. 또한, 애플리케이션 단에서 ULID 타입의 `eventId`를 지정하여 이벤트 추적이 가능하다. 이 과정은 아래와 같이 요약 가능하다.
 
@@ -78,9 +85,9 @@ correlationData.getFuture().thenApply(confirm -> {
 3. Publish Confirm을 통해 이벤트 아웃박스 상태를 갱신
 
 
-## \## 1. `AFTER_COMMIT` 시점에서 이벤트를 수신받아 처리
+## 1. `AFTER_COMMIT` 시점에서 이벤트를 수신받아 처리
 
-### \### DomainEventPublishListener
+### DomainEventPublishListener
 
 ```java
 @Component
@@ -128,7 +135,7 @@ public record EventPublishResult(
 
 &nbsp; `EventPublishResult`는 발행한 이벤트의 `eventId`, 발행 성공 여부, 실패 시 원인을 담아 반환한다.
 
-## \## 2. 외부 메시지 브로커(RabbitMQ)로 메시지를 발행
+## 2. 외부 메시지 브로커(RabbitMQ)로 메시지를 발행
 
 ```java
 public interface DomainEventExternalPublisher {
@@ -191,7 +198,7 @@ public class RabbitMQEventPublisher implements DomainEventExternalPublisher {
 
 &nbsp; Publish Confirm은 `Confirm.isAck()` 메서드를 통해 외부 메시지 브로커의 메시지 수신 여부를 반환한다. ACK 신호가 도착한 경우 외에 모든 경우는 메시지 브로커로 메시지 수신 실패라고 판단한다.
 
-## \## 3. Pulish Confirm을 통해 이벤트 아웃박스 상태를 갱신
+## 3. Pulish Confirm을 통해 이벤트 아웃박스 상태를 갱신
 
 &nbsp; `Confirm.isAck()` 여부에 따라서 `EventPublishResult.isSuccess` 필드의 값이 결정된다.
 
@@ -215,7 +222,7 @@ public class RabbitMQEventPublisher implements DomainEventExternalPublisher {
 
 &nbsp; 이를 통해 비동기 처리 환경에서도 이벤트 아웃박스 상태를 안정적으로 갱신할 수 있게 되었다.
 
-# 결론
+# \# 결론
 
 &nbsp; 이번 포스팅은 이벤트 아웃박스 기록 후, 이벤트를 즉시 발행하는 로직을 구현한 과정을 담았다.
 

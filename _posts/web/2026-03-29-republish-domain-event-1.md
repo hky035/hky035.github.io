@@ -10,7 +10,14 @@ published: true
 show_date: true
 ---
 
-# 서론
+# \# Related Post
+
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [Event Driven Architecture와 Transactional Outbox Pattern의 연관성](/web/eda-and-tx-outbox-pattern/)
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> **도메인 이벤트 재발행 구조 도입기 1 - EventOutbox의 저장**
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [도메인 이벤트 재발행 구조 도입기 2 - 커직 직후 발행과 RabbitMQ Publish Confirm](/web/republish-domain-event-2/)   
+- <i class="fas fa-link" style="font-size: 13.5px; font-weight: bold;"></i> [도메인 이벤트 재발행 구조 도입기 3 - 이벤트 아웃박스 폴링을 통한 이벤트 발행](/web/republish-domain-event-3/)   
+
+# \# 서론
 
 &nbsp; 여행 기록 관리 플랫폼 '여기가' 프로젝트를 진행하며 이메일 인증·비밀번호 초기화 이메일 발송 기능을 구현하였다. 이메일 발송은 외부 메일 서버와 통신하는 Network I/O 작업이므로, 핵심 비즈니스 로직과 결합도를 낮추고 향후 메일 발송 기능을 별도 서비스로 분리할 수 있도록 이벤트 기반 구조를 도입하였다.
 
@@ -18,21 +25,21 @@ show_date: true
 
 &nbsp; 이번 글에서는 서로 다른 도메인 이벤트를 공통된 EventOutbox로 변환하고 저장하는 구조를 구현한 과정을 다룬다.
 
-# 본론
+# \# 본론
 
-# # 문제 정의
+## 문제 정의
 
 &nbsp; 도메인 이벤트에 대한 아웃박스 저장·이벤트 발행 구조를 구현하는데 있어 처음에는 "도메인 이벤트 별 아웃박스 저장·발행 로직을 구현하면 되지 않을까?"는 생각을 하였다. 실제로도 이러한 생각을 기반으로 구현을 시작하였다. 
 
 &nbsp; 그러나, 이메일 인증 이벤트에 대한 아웃박스 저장 로직을 구현한 뒤 비밀번호 초기화 이벤트에도 같은 구조를 적용하는 과정에서, <u>도메인 이벤트의 종류만 다를 뿐 거의 동일한 로직을 반복해서 구현하고 있다는 점이 비효율적</u>으로 느껴졌다. 
 
-# # 해결 방안
+## 해결 방안
 
 &nbsp; 위 문제를 해결하기 위해 도메인 이벤트 타입과 관계없이 공통으로 적용할 수 있는 아웃박스 변환·저장 흐름이 필요하다고 판단하였다.
 
 &nbsp; 따라서, 이에 모든 도메인 이벤트가 공통 상위 타입 `DomainEvent`를 상속하고, 하나의 리스너가 이벤트를 `EvnetOutbox` 엔티티로 변환해 저장하는 구조로 재설계하였다. 이에 대한 구현 과정을 이번 포스팅에서 서술할 것이다.
 
-# # EventOutbox 구조
+## EventOutbox 구조
 
 ```java
 @Getter
@@ -108,7 +115,7 @@ public enum EventOutboxStatus {
 
 &nbsp; 현재 다루는 이벤트에는 인증 번호의 유효 시간이 존재한다. 이벤트가 뒤늦게 발행되면 이미 만료된 인증 코드를 사용자에게 전달할 수 있으므로, 일정 시간이 지난 이벤트는 재발행 대상에서 제외해야 한다. 또한 지속적으로 발행에 실패하는 이벤트를 무제한으로 재시도하면 시스템 자원을 낭비할 수 있다. 이를 반영한 재시도 정책을 적용하기 위해 실패 횟수인 `failCount`와 마지막 재시도 시각인 `lastRetriedAt`을 저장하였다.
 
-# # DomainEventListener
+## DomainEventListener
 
 &nbsp; 앞서 모든 도메인 이벤트의 일괄적인 처리를 위해 저장·발행 구조를 통일시켜야한다는 해결 방안을 찾았다.
 
@@ -165,7 +172,7 @@ public class PasswordResetEvent extends DomainEvent {
 
 &nbsp; 결국 각 구현 타입에 따라 처리할 수도 있지만, 모든 도메인이 공통으로 상속하고 있는 타입 `DomainEvent`를 활용하여 일괄적인 이벤트 저장·발행 로직을 구현할 수 있다.
 
-## ## DomainEventRecordListener
+## DomainEventRecordListener
 
 ```java
 @Component
@@ -202,7 +209,7 @@ public class DomainEventRecordListener implements DomainEventListener {
 
 &nbsp; 커밋 이전 시점에 아웃박스 저장 로직을 실행하여 <u style="font-weight: bold;">핵심 비즈니스 로직 트랜잭션과 원자적으로 실행</u>하도록 한다.
 
-### ### '여기가'에서는 원자적으로 실행이 되는가?
+### '여기가'에서는 원자적으로 실행이 되는가?
 
 &nbsp; 위 설명처럼 트랜잭션 아웃박스 패턴의 핵심은 비즈니스 로직을 수행하는 트랜잭션과 아웃박스 기록을 동일한 트랜잭션에 묶어 원자적으로 실행하는 것이다. 두 작업이 하나의 트랜잭션에 참여하면 함께 커밋되거나 롤백되므로, 비즈니스 데이터의 저장과 이벤트 아웃박스의 기록도 원자적으로 수행할 수 있게 된다.
 
@@ -214,7 +221,7 @@ public class DomainEventRecordListener implements DomainEventListener {
 
 &nbsp; 그러나, 현재 프로젝트에서는 인증 번호의 TTL이 3분으로 짧고 불일치가 발생했을 때의 영향도 제한적이라는 점을 고려하여 Redis 저장 방식을 유지하고, 이 위험을 설계상의 트레이드오프로 수용하였다. 따라서 이번 구현은 Transactional Outbox Pattern을 완전히 적용한 구조라기보다, 이벤트 영속화와 재발행 아이디어를 프로젝트 상황에 맞게 적용한 구조로 정의하였다.
 
-# 결론
+# \# 결론
 
 ![event-save-process](/assets/img/docs/web/republish-domain-event-1/event-store-process.png)
 
