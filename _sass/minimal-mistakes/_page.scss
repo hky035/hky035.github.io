@@ -176,6 +176,13 @@ body {
     }
   }
 
+  /* 문단에 이미지만 단독으로 있는 경우(![]() ) 중앙 정렬 */
+  p > img:only-child {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   img.lightbox-image {
     cursor: zoom-in;
   }
