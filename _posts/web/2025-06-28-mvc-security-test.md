@@ -558,9 +558,7 @@ public class TestControllerTest {
 }
 ```
 
-<div style="display: flex; justify-content: center;">
-    <img src="/assets/img/docs/web/mvc-security-test/al-without-securityautoconfig.png" alt="al-without-securityautoconfig" style="margin: 0 auto;" />
-</div>
+![al-without-securityautoconfig](/assets/img/docs/web/mvc-security-test/al-without-securityautoconfig.png)
 
 &nbsp; SecurityAutoConfiguration을 제거하면 Security 관련 리졸버들이 등록되지 않기 때문에 `AuthenticationPrincipalArgumentResolver`가 목록 내 존재하지 않는다.
 
